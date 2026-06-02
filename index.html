@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>泰金寶 & 金仁寶集團趨勢報告</title>
+  <style>
+    :root {
+      --blue:   #1a56db;
+      --blue-l: #e8f0fe;
+      --green:  #0e9f6e;
+      --green-l:#ecfdf5;
+      --red:    #e02424;
+      --red-l:  #fef2f2;
+      --gray:   #6b7280;
+      --bg:     #f9fafb;
+      --card:   #ffffff;
+      --border: #e5e7eb;
+      --text:   #111827;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a56db 0%, #0e9f6e 100%);
+      color: #fff;
+      padding: 40px 32px 32px;
+    }
+    header .label {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: .75;
+      margin-bottom: 8px;
+    }
+    header h1 { font-size: 28px; font-weight: 700; }
+    header .meta { font-size: 13px; opacity: .7; margin-top: 6px; }
+
+    /* ── Layout ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .card .subtitle {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 16px;
+    }
+
+    /* ── KPI row ── */
+    .kpi-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .kpi {
+      flex: 1;
+      min-width: 130px;
+      background: var(--blue-l);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .kpi.green { background: var(--green-l); }
+    .kpi.red   { background: var(--red-l); }
+    .kpi .kpi-label {
+      font-size: 11px;
+      color: var(--gray);
+      margin-bottom: 4px;
+    }
+    .kpi .kpi-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .kpi.green .kpi-value { color: var(--green); }
+    .kpi.red   .kpi-value { color: var(--red); }
+    .kpi .kpi-sub {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    /* ── List ── */
+    ul.trend-list { list-style: none; padding: 0; }
+    ul.trend-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    ul.trend-list li:last-child { border-bottom: none; }
+    ul.trend-list li .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    ul.trend-list li .dot.green { background: var(--green); }
+    ul.trend-list li .dot.red   { background: var(--red); }
+    ul.trend-list li .dot.gray  { background: var(--gray); }
+
+    /* ── Tag badges ── */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--blue-l);
+      color: var(--blue);
+    }
+    .tag.green { background: var(--green-l); color: var(--green); }
+    .tag.gray  { background: #f3f4f6;        color: var(--gray); }
+    .tag.red   { background: var(--red-l);   color: var(--red); }
+
+    /* ── Comparison table ── */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .compare-table th {
+      background: #f3f4f6;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table .col-label { color: var(--gray); font-size: 12px; width: 120px; }
+
+    /* ── Risk box ── */
+    .risk-box {
+      background: var(--red-l);
+      border-left: 4px solid var(--red);
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+    .risk-box strong { color: var(--red); }
+
+    /* ── Sources ── */
+    .sources {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 8px;
+    }
+    .sources a { color: var(--blue); text-decoration: none; }
+    .sources a:hover { text-decoration: underline; }
+    .sources ul { padding-left: 18px; line-height: 2; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .kpi-row { flex-direction: column; }
+      header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="label">產業趨勢報告</div>
+  <h1>泰金寶 &amp; 金仁寶集團</h1>
+  <div class="meta">資料截至 2026 年 6 月 ｜ 整理自公開財報、法人報告、媒體資訊</div>
+</header>
+
+<main>
+
+  <!-- ── 集團架構 ── -->
+  <div class="section-title">集團架構</div>
+  <div class="card">
+    <h2>金仁寶集團（New Kinpo Group）</h2>
+    <div class="subtitle">台灣控股母集團，旗下多家上市公司</div>
+    <table class="compare-table">
+      <tr>
+        <th>子公司</th>
+        <th>上市地</th>
+        <th>定位</th>
+      </tr>
+      <tr>
+        <td><strong>仁寶電腦（2324.TW）</strong></td>
+        <td>台灣證交所</td>
+        <td>全球第二大筆電代工廠，積極轉型 AI 伺服器</td>
+      </tr>
+      <tr>
+        <td><strong>泰金寶電通（CCET.BKK）</strong></td>
+        <td>泰國交易所（SET）</td>
+        <td>集團東南亞製造重鎮，IoT / 消費電子代工</td>
+      </tr>
+      <tr>
+        <td><strong>金寶電子（2312.TW）</strong></td>
+        <td>台灣證交所</td>
+        <td>印表機、周邊電子代工</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ── 仁寶電腦 ── -->
+  <div class="section-title">仁寶電腦（2324.TW）— 核心成長引擎</div>
+  <div class="card">
+    <h2>財務現況</h2>
+    <div class="subtitle">2024 全年 ／ 2025 Q1 數據</div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">2024 全年營收</div>
+        <div class="kpi-value">9,102</div>
+        <div class="kpi-sub">億元台幣</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">2024 稅後純益</div>
+        <div class="kpi-value">100.4</div>
+        <div class="kpi-sub">億元｜年增 31%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">非 PC 業務目標</div>
+        <div class="kpi-value">30%</div>
+        <div class="kpi-sub">2025 年目標（2024 約 23%）</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">AI 伺服器目標占比</div>
+        <div class="kpi-value">15~20%</div>
+        <div class="kpi-sub">2025 年目標</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>AI 伺服器轉型（最大催化劑）</h2>
+    <div class="subtitle">啟動「三年全面擁抱 AI」計畫</div>
+    <ul class="trend-list">
+      <li>
+        <span class="dot green"></span>
+        <span><strong>成為戴爾 2026 年主力 AI 伺服器供應商</strong>——原大單由鴻海、緯創、英業達供應，戴爾因星門計畫落敗甲骨文後重整供應鏈，仁寶因未大量出貨 AI 伺服器、被視為可信中立夥伴而獲轉單</span>
+      </li>
+      <li>
+        <span class="dot green"></span>
+        <span>加入 <strong>NVIDIA MGX 架構</strong>供應商名單，GB300 伺服器設計已標準化，製造門檻縮小</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span>市場預估 2026 年仁寶伺服器營收可超過 <strong>500 億元</strong></span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span>2025 Q1 獲利與 EPS 年增雙位數，AI 伺服器尚未完全放量已先行驅動獲利成長</span>
+      </li>
+    </ul>
+    <div class="tags">
+      <span class="tag green">NVIDIA MGX</span>
+      <span class="tag green">戴爾大單</span>
+      <span class="tag">GB300 伺服器</span>
+      <span class="tag">EMS 製造</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>全球產能分散策略</h2>
+    <div class="subtitle">降低地緣政治與關稅風險</div>
+    <ul class="trend-list">
+      <li>
+        <span class="dot"></span>
+        <span><strong>越南</strong>：第二大筆電生產基地，持續擴產</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span><strong>美國、墨西哥、波蘭</strong>：針對美系品牌客戶本地化製造</span>
+      </li>
+      <li>
+        <span class="dot gray"></span>
+        <span>目標：中國大陸產能占比降至約 <strong>50%</strong>（現階段仍為主力）</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>新興技術佈局</h2>
+    <ul class="trend-list">
+      <li>
+        <span class="dot"></span>
+        <span><strong>量子運算</strong>：採用 NVIDIA CUDA-Q，推出「CGA-QZ 平台」，提供量子啟發運算服務</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span><strong>AI PC</strong>：2025 Computex 展示四大族群解決方案（快商族、創動族、超能創作者、無界限玩家）</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span>2026 年 AI PC 市場滲透率預估達 <strong>40~60%</strong>，仁寶為主要受益代工廠</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>潛在風險</h2>
+    <div class="risk-box">
+      <strong>⚠ 需留意：</strong>
+      <ul style="margin-top:8px; padding-left:18px; line-height:2;">
+        <li>AI 伺服器占比目前仍在個位數，量產進度若不如預期，可能帶來估值修正</li>
+        <li>股價題材走在基本面前，需觀察法人買盤延續度與實際營收跟進</li>
+        <li>中美貿易摩擦若持續升溫，中國產能占比仍高是短期風險</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── 泰金寶 ── -->
+  <div class="section-title">泰金寶電通（CCET）— 集團東南亞製造節點</div>
+  <div class="card">
+    <h2>財務現況</h2>
+    <div class="subtitle">泰國交易所（SET）上市，代號 CCET</div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">近季淨利</div>
+        <div class="kpi-value">502M</div>
+        <div class="kpi-sub">泰銖（前季 426M，季增 18%）</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">股息殖利率</div>
+        <div class="kpi-value">3.54%</div>
+        <div class="kpi-sub">每半年配息（2025）</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">分析師目標股價</div>
+        <div class="kpi-value">6.5~8.5</div>
+        <div class="kpi-sub">泰銖</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>業務趨勢</h2>
+    <ul class="trend-list">
+      <li>
+        <span class="dot"></span>
+        <span>主要產品：印表機、IoT 裝置、消費電子、智慧家庭周邊</span>
+      </li>
+      <li>
+        <span class="dot green"></span>
+        <span>集團「<strong>中國 +1</strong>」策略受惠者，泰國廠為重要替代產能節點</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span>隨仁寶 AI 伺服器訂單增長，集團整體製造量能需求上升，泰國廠可能承接更多電子零件組裝</span>
+      </li>
+      <li>
+        <span class="dot gray"></span>
+        <span>規模相對較小，資訊透明度低於台股上市母公司，建議搭配集團財報一併觀察</span>
+      </li>
+    </ul>
+    <div class="tags">
+      <span class="tag">IoT 代工</span>
+      <span class="tag">東南亞製造</span>
+      <span class="tag green">中國 +1</span>
+      <span class="tag gray">SET 上市</span>
+    </div>
+  </div>
+
+  <!-- ── 比較 ── -->
+  <div class="section-title">兩家公司快速比較</div>
+  <div class="card">
+    <table class="compare-table">
+      <tr>
+        <th class="col-label">面向</th>
+        <th>仁寶電腦（2324.TW）</th>
+        <th>泰金寶電通（CCET）</th>
+      </tr>
+      <tr>
+        <td class="col-label">成長驅動</td>
+        <td>AI 伺服器轉型、戴爾大單</td>
+        <td>集團擴產外溢、IoT 穩定訂單</td>
+      </tr>
+      <tr>
+        <td class="col-label">最大催化劑</td>
+        <td>2026 年戴爾 AI 伺服器放量（500 億元目標）</td>
+        <td>中國 +1 產能轉移持續受惠</td>
+      </tr>
+      <tr>
+        <td class="col-label">主要風險</td>
+        <td>題材估值過高、AI 伺服器量產進度</td>
+        <td>規模小、資訊透明度低</td>
+      </tr>
+      <tr>
+        <td class="col-label">股息</td>
+        <td>穩定配息，但成長股特性更強</td>
+        <td>殖利率 3.54%，配息穩定</td>
+      </tr>
+      <tr>
+        <td class="col-label">適合關注</td>
+        <td>積極型、AI 產業鏈投資人</td>
+        <td>穩健型、東南亞製造布局</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ── 走勢分析與買賣點 ── -->
+  <div class="section-title">走勢分析與買賣點建議（2026/06/02）</div>
+
+  <!-- 免責聲明 -->
+  <div style="background:#fffbeb;border-left:4px solid #f59e0b;border-radius:6px;padding:10px 16px;font-size:12px;color:#92400e;margin-bottom:16px;">
+    ⚠ 以下分析僅供參考，不構成投資建議。股市有風險，請自行評估風險承受度。
+  </div>
+
+  <!-- 總覽評分卡 -->
+  <div class="card">
+    <h2>三檔走勢總覽</h2>
+    <div class="subtitle">資料來源：Yahoo 股市即時行情 · 2026/06/02 收盤</div>
+    <table class="compare-table">
+      <tr>
+        <th>標的</th>
+        <th>收盤價</th>
+        <th>今日漲跌</th>
+        <th>近3日累計</th>
+        <th>趨勢方向</th>
+        <th>短線訊號</th>
+      </tr>
+      <tr>
+        <td><strong>仁寶（2324.TW）</strong></td>
+        <td><strong style="color:#e02424">44.35</strong></td>
+        <td style="color:#e02424">▲ 4.00（+9.91%）</td>
+        <td style="color:#e02424">▲ +20.81%</td>
+        <td><span class="tag green" style="font-size:12px">強勢多頭</span></td>
+        <td><span class="tag red" style="font-size:12px">短線過熱</span></td>
+      </tr>
+      <tr>
+        <td><strong>金寶（2312.TW）</strong></td>
+        <td><strong style="color:#e02424">41.30</strong></td>
+        <td style="color:#e02424">▲ 0.70（+1.72%）</td>
+        <td style="color:#e02424">▲ +8.70%</td>
+        <td><span class="tag green" style="font-size:12px">溫和多頭</span></td>
+        <td><span class="tag" style="font-size:12px">觀察整理</span></td>
+      </tr>
+      <tr>
+        <td><strong>泰金寶（CCET.BKK）</strong></td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="tag gray" style="font-size:12px">穩健配息</span></td>
+        <td><span class="tag gray" style="font-size:12px">長線布局</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 仁寶技術分析 -->
+  <div class="card">
+    <h2>仁寶電腦（2324.TW）— 技術面深度分析</h2>
+    <div class="subtitle">收盤 44.35 ／ 連3漲 +20.81%</div>
+
+    <!-- 均線狀況 -->
+    <div style="margin-bottom:16px;">
+      <div style="font-weight:600;font-size:13px;margin-bottom:8px;">均線多頭排列（全部向上翻揚）</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <div style="background:#ecfdf5;border-radius:8px;padding:10px 16px;text-align:center;min-width:90px;">
+          <div style="font-size:11px;color:#6b7280;">MA5</div>
+          <div style="font-size:16px;font-weight:700;color:#0e9f6e;">37.66</div>
+          <div style="font-size:10px;color:#0e9f6e;">▲ 向上</div>
+        </div>
+        <div style="background:#ecfdf5;border-radius:8px;padding:10px 16px;text-align:center;min-width:90px;">
+          <div style="font-size:11px;color:#6b7280;">MA10</div>
+          <div style="font-size:16px;font-weight:700;color:#0e9f6e;">34.60</div>
+          <div style="font-size:10px;color:#0e9f6e;">▲ 向上</div>
+        </div>
+        <div style="background:#ecfdf5;border-radius:8px;padding:10px 16px;text-align:center;min-width:90px;">
+          <div style="font-size:11px;color:#6b7280;">MA20</div>
+          <div style="font-size:16px;font-weight:700;color:#0e9f6e;">32.06</div>
+          <div style="font-size:10px;color:#0e9f6e;">▲ 向上</div>
+        </div>
+        <div style="background:#ecfdf5;border-radius:8px;padding:10px 16px;text-align:center;min-width:90px;">
+          <div style="font-size:11px;color:#6b7280;">MA60</div>
+          <div style="font-size:16px;font-weight:700;color:#0e9f6e;">30.90</div>
+          <div style="font-size:10px;color:#0e9f6e;">▲ 向上</div>
+        </div>
+        <div style="background:#ecfdf5;border-radius:8px;padding:10px 16px;text-align:center;min-width:90px;">
+          <div style="font-size:11px;color:#6b7280;">MA120</div>
+          <div style="font-size:16px;font-weight:700;color:#0e9f6e;">30.82</div>
+          <div style="font-size:10px;color:#0e9f6e;">▲ 向上</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#6b7280;margin-top:8px;">
+        ✅ 現價 44.35 遠高於所有均線，多頭格局確立；本益比 30.34 低於同業 35.66，基本面仍有支撐
+      </div>
+    </div>
+
+    <!-- 買點建議 -->
+    <div style="margin-bottom:12px;">
+      <div style="font-weight:600;font-size:13px;color:#0e9f6e;margin-bottom:8px;">📈 買進參考區間（短線過熱，等回檔）</div>
+      <table class="compare-table">
+        <tr>
+          <th>買點等級</th>
+          <th>參考價位</th>
+          <th>對應支撐</th>
+          <th>操作建議</th>
+        </tr>
+        <tr>
+          <td><span class="tag" style="font-size:11px;">第一買點</span></td>
+          <td><strong>36 ~ 38 元</strong></td>
+          <td>回測 MA5（37.66）</td>
+          <td>輕倉試單，布局 20%</td>
+        </tr>
+        <tr>
+          <td><span class="tag" style="font-size:11px;">第二買點</span></td>
+          <td><strong>34 ~ 35 元</strong></td>
+          <td>回測 MA10（34.60）</td>
+          <td>確認支撐後加碼至 50%</td>
+        </tr>
+        <tr>
+          <td><span class="tag green" style="font-size:11px;">主力買點</span></td>
+          <td><strong>31 ~ 33 元</strong></td>
+          <td>回測 MA20（32.06）強支撐</td>
+          <td>若跌到此區重倉，目標最大</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 賣點建議 -->
+    <div style="margin-bottom:12px;">
+      <div style="font-weight:600;font-size:13px;color:#e02424;margin-bottom:8px;">📉 賣出 / 獲利了結參考區間</div>
+      <table class="compare-table">
+        <tr>
+          <th>目標</th>
+          <th>參考價位</th>
+          <th>依據</th>
+          <th>操作建議</th>
+        </tr>
+        <tr>
+          <td><span class="tag" style="font-size:11px;">短線目標</span></td>
+          <td><strong>48 ~ 50 元</strong></td>
+          <td>整數關卡心理壓力</td>
+          <td>獲利 10~15% 分批出場 30%</td>
+        </tr>
+        <tr>
+          <td><span class="tag" style="font-size:11px;">中線目標</span></td>
+          <td><strong>55 ~ 58 元</strong></td>
+          <td>AI 伺服器放量催化</td>
+          <td>等 2026 Q3 法說確認後持有</td>
+        </tr>
+        <tr>
+          <td><span class="tag red" style="font-size:11px;">停損線</span></td>
+          <td><strong>跌破 31 元</strong></td>
+          <td>MA20 失守多頭終結</td>
+          <td>無條件出場，勿凹單</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="background:#f0fdf4;border-radius:6px;padding:12px 16px;font-size:13px;color:#065f46;">
+      <strong>操作結論：</strong>今日漲停（+9.91%）、連漲20%，<strong>短線切勿追高</strong>。等待 3~5 個交易日縮量整理後，在 MA5~MA10 附近（34~38元）分批買進，中線目標 55~58 元，停損設 MA20 失守。
+    </div>
+  </div>
+
+  <!-- 金寶技術分析 -->
+  <div class="card">
+    <h2>金寶電子（2312.TW）— 技術面分析</h2>
+    <div class="subtitle">收盤 41.30 ／ 連3漲 +8.70% ／ 本益比 39.04（同業 38.79）</div>
+
+    <ul class="trend-list">
+      <li>
+        <span class="dot green"></span>
+        <span>隨仁寶帶動，連3漲 +8.70%，相對溫和；本益比 39.04 略高於同業平均，但溢價合理</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span>今日高低震盪大（最高 43.50 / 最低 38.85），代表籌碼尚在換手，短線波動仍高</span>
+      </li>
+      <li>
+        <span class="dot red"></span>
+        <span>基本面缺乏 AI 直接題材（印表機、周邊代工），成長動能較弱，宜守不宜攻</span>
+      </li>
+    </ul>
+
+    <div style="margin-top:14px;">
+      <table class="compare-table">
+        <tr>
+          <th>操作方向</th>
+          <th>參考價位</th>
+          <th>說明</th>
+        </tr>
+        <tr>
+          <td><span class="tag green" style="font-size:11px;">買進參考</span></td>
+          <td><strong>38 ~ 39 元</strong></td>
+          <td>回測近期整理平台支撐，可輕倉布局</td>
+        </tr>
+        <tr>
+          <td><span class="tag" style="font-size:11px;">獲利了結</span></td>
+          <td><strong>44 ~ 46 元</strong></td>
+          <td>前波高點壓力區，分批出場</td>
+        </tr>
+        <tr>
+          <td><span class="tag red" style="font-size:11px;">停損線</span></td>
+          <td><strong>跌破 36 元</strong></td>
+          <td>跌破整理平台，出場觀望</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 泰金寶分析 -->
+  <div class="card">
+    <h2>泰金寶電通（CCET.BKK）— 長線配息布局</h2>
+    <div class="subtitle">泰國交易所（SET）上市 ／ 分析師目標 6.5 ~ 8.5 泰銖</div>
+
+    <ul class="trend-list">
+      <li>
+        <span class="dot green"></span>
+        <span>殖利率 3.54%，每半年穩定配息，適合「中國+1」東南亞製造主題長線布局者</span>
+      </li>
+      <li>
+        <span class="dot"></span>
+        <span>流動性偏低（泰股成交量小），不適合短線操作；宜用「核心持股」心態配置</span>
+      </li>
+      <li>
+        <span class="dot red"></span>
+        <span>資訊透明度低，建議搭配仁寶財報季同步觀察集團訂單動向</span>
+      </li>
+    </ul>
+
+    <div style="margin-top:14px;">
+      <table class="compare-table">
+        <tr>
+          <th>操作方向</th>
+          <th>參考價位（泰銖）</th>
+          <th>說明</th>
+        </tr>
+        <tr>
+          <td><span class="tag green" style="font-size:11px;">買進區間</span></td>
+          <td><strong>6.5 元以下</strong></td>
+          <td>分析師目標下緣，安全邊際最佳</td>
+        </tr>
+        <tr>
+          <td><span class="tag" style="font-size:11px;">持有目標</span></td>
+          <td><strong>8.0 ~ 8.5 元</strong></td>
+          <td>分析師目標上緣，分批獲利了結</td>
+        </tr>
+        <tr>
+          <td><span class="tag red" style="font-size:11px;">停損線</span></td>
+          <td><strong>跌破 5.5 元</strong></td>
+          <td>基本面惡化訊號，保守出場</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 操作策略總結 -->
+  <div class="card" style="border:2px solid #1a56db;">
+    <h2 style="color:#1a56db;">操作策略總結</h2>
+    <div class="subtitle">根據基本面 + 技術面綜合評估</div>
+    <table class="compare-table">
+      <tr>
+        <th>標的</th>
+        <th>建議操作</th>
+        <th>核心邏輯</th>
+        <th>風險等級</th>
+      </tr>
+      <tr>
+        <td><strong>仁寶 2324</strong></td>
+        <td><span class="tag green">等回檔買進</span></td>
+        <td>AI伺服器題材強，均線多頭，等 MA5 附近才進場</td>
+        <td><span class="tag" style="font-size:11px;">中風險</span></td>
+      </tr>
+      <tr>
+        <td><strong>金寶 2312</strong></td>
+        <td><span class="tag">觀察整理</span></td>
+        <td>搭順風車，需仁寶確認持續上攻才跟進</td>
+        <td><span class="tag" style="font-size:11px;">中風險</span></td>
+      </tr>
+      <tr>
+        <td><strong>泰金寶 CCET</strong></td>
+        <td><span class="tag green">長線配息持有</span></td>
+        <td>東南亞製造+配息，穩健型資產配置</td>
+        <td><span class="tag gray" style="font-size:11px;">低風險</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ── 來源 ── -->
+  <div class="section-title">資料來源</div>
+  <div class="sources">
+    <ul>
+      <li><a href="https://uc913.com/stock-2324/" target="_blank">仁寶電腦（2324）AI 浪潮下的伺服器轉型與全球布局 — 913 理財估測站</a></li>
+      <li><a href="https://technews.tw/2025/10/23/ai-server-swap-oders/" target="_blank">AI 伺服器大洗牌！仁寶、英業達成戴爾 2026 年主力供應商 — TechNews 科技新報</a></li>
+      <li><a href="https://finance.technews.tw/2025/01/14/embracing-ai" target="_blank">仁寶今年 AI 伺服器占比拚二成！啟動全面擁抱 AI 計畫 — TechNews</a></li>
+      <li><a href="https://www.compal.com/esg/zh-hant/news/2025-computex-compal-ai-pc-is-back-focusing-o/" target="_blank">2025 COMPUTEX 仁寶 AI PC 重磅出擊 — Compal ESG</a></li>
+      <li><a href="https://hellosafe.tw/investing/stock-market/stocks/compal-electronics" target="_blank">仁寶電腦 2026 完整分析與前景預測 — HelloSafe</a></li>
+      <li><a href="https://www.moneydj.com/KMDJ/wiki/wikiViewer.aspx?keyid=0b490f5d-e18b-4a1c-9af7-cab7af15ddf4" target="_blank">泰金寶科技 — MoneyDJ 財經百科</a></li>
+      <li><a href="https://tw.stock.yahoo.com/quote/CCET-R.BK" target="_blank">CCET 股價走勢 — Yahoo 股市</a></li>
+      <li><a href="https://www.wealth.com.tw/articles/1d55649d-dc16-41ba-b562-4a0c218c843f" target="_blank">AI 伺服器大洗牌分析 — 財訊</a></li>
+    </ul>
+  </div>
+
+</main>
+
+</body>
+</html>
