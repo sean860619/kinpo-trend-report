@@ -77,4 +77,3 @@ Workflow: `open` → `snapshot` → read `@eN` refs → interact → `snapshot` 
 - 程式碼加中文註解
 - 禁止刪除任何檔案，除非明確說「刪除」
 - `.env` / `.env.local` 檔案不能動
-- 禁止 `git push --force`
