@@ -22,13 +22,52 @@ wmux browser back / forward / reload
 
 Workflow: `open` → `snapshot` → read `@eN` refs → interact → `snapshot` again. Refs expire on page changes.
 
+## Security Setup（安全三件套）
+
+已完成以下三層安全設定：
+
+### 第一層：安全刪除
+- `rr <路徑>` — 移至資源回收筒（可還原）
+- `rm <路徑>` — 同上（已覆寫預設 rm）
+- `rmf <路徑>` — 永久刪除（Remove-Item -Force）
+- 設定位置：`C:\Users\User\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
+
+### 第二層：危險指令黑名單（24 條）
+寫入 `~/.claude/settings.json`，以下類別 AI 直接拒絕：
+- 遞迴刪除（rm -rf 各種變體）
+- sudo / 權限提升
+- 磁碟格式化（dd、diskpart、Format-Volume）
+- chmod 777 / icacls 全開
+- Git 毀壞操作（reset --hard、push --force、clean -f、branch -D）
+- 系統關機（shutdown、reboot、Restart-Computer）
+- 檔案清空（truncate、: >）
+
+### 第三層：權限模式
+- 目前設定：`bypassPermissions`（全自動，黑名單持續守護）
+- 變更方式：修改 `~/.claude/settings.json` 的 `permissions.defaultMode`
+  - `acceptEdits` — 改檔案免問、跑指令要確認（推薦新手）
+  - `default` — 每個動作都問
+  - `plan` — 只規劃不執行
+
 ## Configured Permissions
 
-The following are pre-approved in `.claude/settings.local.json`:
-
+預先核准（`.claude/settings.local.json`）：
 - `WebFetch` for `raw.githubusercontent.com`, `github.com`, `www.npmjs.com`, `moksaweb.com`
-- `Bash(gh repo *)` and `Bash(gh search *)`
+- `Bash(gh repo *)` / `Bash(gh search *)`
 - `Bash(wmux browser *)`
+
+## Quick Commands
+
+| 指令 | 功能 |
+|---|---|
+| `cc` | 啟動 Claude Code（切換到專案目錄）|
+| `rr <路徑>` | 安全刪除（移至資源回收筒）|
+| `claude-status` | 查看目前所有設定狀態 |
+| `claude --version` | 查看版本 |
+
+## Custom Slash Commands
+
+- `/morning` — 早晨日報：讀取 Gmail（昨日）、Google Calendar（今日）、Notion 任務，彙整成每日摘要
 
 ## Interaction Rules
 
