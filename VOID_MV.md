@@ -101,11 +101,12 @@ V O I D
 - [x] 影片生成第二波（16 段，完整覆蓋 1:30 歌曲）
 - [x] Phase 3：3 個新場景底圖 + 破碎玻璃疊加圖（S07-S12, C01-C02）
 - [x] Phase 4：8 段場景影片（V17-V24）
-- [x] 標題字卡靜態圖 T01（地面版，已確認保留）
-- [ ] 標題字卡靜態圖 T01-v2（太空懸浮版，生成中）
-- [ ] 標題字卡動態影片 T02-v2（太空爆裂→再成形）
+- [x] Phase 5：6 段影片（V25-V30）
+- [x] 標題字卡 T01（地面版，碎石漂浮）
+- [x] 標題字卡 T02-v3（POV 爆裂版）
+- [x] 剪輯合成（VOID_MV_FINAL.mp4）
 - [ ] 特效後製（光效、轉場）
-- [ ] 剪輯合成 + 韓文字幕
+- [ ] 韓文字幕
 
 ---
 
@@ -173,12 +174,8 @@ V O I D
 
 | # | 名稱 | 節點 ID | 說明 |
 |---|---|---|---|
-| T01 | TitleCard-Static（地面版） | `93020777-3876-43fe-b1cd-12f32f9c89b4` | 已確認，碎石漂浮 |
-| T02 | TitleCard-Intro（舊版） | `797ff65f-09d2-458e-bef1-d0c37fee159b` | 棄用，改太空版 |
-| T03 | TitleCard-Outro（舊版） | `88d30834-9372-4f4f-bc8d-bcecdab5abb5` | 棄用，改太空版 |
-| T01-v2 | TitleCard-Space（太空版） | 生成中 | 太空懸浮底圖 |
-| T02-v2 | TitleCard-SpaceExplosion（舊） | `a8995f2e-50b1-4c9d-8fd9-8f76dce17c4d` | 棄用 |
-| T02-v3 | TitleCard-SpaceExplosion-POV | `84e8d85e-058f-41f6-88b2-94fac6791d97` | POV 爆裂版，確認使用 |
+| T01 | TitleCard-Static（地面版） | `93020777-3876-43fe-b1cd-12f32f9c89b4` | 確認，碎石漂浮 |
+| T02-v3 | TitleCard-SpaceExplosion-POV | `84e8d85e-058f-41f6-88b2-94fac6791d97` | 確認，POV 爆裂版 |
 
 ---
 
@@ -192,22 +189,6 @@ V O I D
 | V28 | Bridge-TwoSilhouette | 2:00~2:10 | `628ec41d-cbc5-4e2f-8669-9361987857ae` | [.mp4](https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/bd48619702e84ec650a56a1b3cada7c3729067393d223c527daeb028ada3555b.mp4) |
 | V29 | FinalChorus-Drift | 2:10~2:20 | `421f3c45-e86b-48d7-8b0d-86fcf42f17d2` | [.mp4](https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/bee2a2afd40521fe3ddd26988670a41a8608c8d351d5530f16f6584ef7a22a34.mp4) |
 | V30 | Outro-VoidFade | 2:20~2:30 | `df86c048-68cd-4f01-85b9-d6692cf27dc3` | [.mp4](https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/893a68d1b0612a6a8f09ec8538002855b4bcf27e455d97bbc72334d9ea8624fa.mp4) |
-
----
-
-## 舊版下一步（已完成）
-
-模型：**Midjourney V7**（`mj-v7`）
-參考節點：女主角 `afa9f4d9` + 男角色 `f6f0e9e8`
-
-| # | 場景描述 | 參考節點 |
-|---|---|---|
-| 1 | 女主角臉部特寫，冷藍光，空洞眼神 | afa9f4d9 |
-| 2 | 女主角臉部特寫，表情迷離，側光 | afa9f4d9 |
-| 3 | 女主角半身，戲劇打光，煙霧 | afa9f4d9 |
-| 4 | 女主角全身，黑暗廢墟場景 | afa9f4d9 |
-| 5 | 雙人氛圍，玻璃/距離感隔開 | afa9f4d9 + f6f0e9e8 |
-| 6 | 男角色場景，街頭黑暗環境 | f6f0e9e8 |
 
 ---
 
