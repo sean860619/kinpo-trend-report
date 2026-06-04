@@ -1,21 +1,16 @@
 $REPO = "C:\Users\User\Downloads\Sean windows agent"
 Set-Location $REPO
 
-# 檢查是否有變更
+# 有變更才 commit
 $status = git status --porcelain
-if (-not $status) {
-    exit 0
+if ($status) {
+    git add "*.md"
+    git add "*.ps1"
+    git add "**/*.md"
+    git add "**/*.ps1"
+    $date = Get-Date -Format "yyyy-MM-dd HH:mm"
+    git commit -m "auto backup: $date"
 }
 
-# 只加入 .md 和 .ps1
-git add "*.md"
-git add "*.ps1"
-git add "**/*.md"
-git add "**/*.ps1"
-
-# 用日期當 commit 訊息
-$date = Get-Date -Format "yyyy-MM-dd HH:mm"
-git commit -m "auto backup: $date"
-
-# push 到 GitHub
+# 不論有無新 commit，都補 push（確保之前失敗的 push 補上）
 git push origin master

@@ -6,14 +6,14 @@ if (-not (Test-Path $REPO_DIR)) {
     git clone $REPO_URL $REPO_DIR
 }
 
-# 建立 auto_pull.ps1
+# 建立 auto_pull.ps1（連網後才跑，確保拉到最新）
 $pullScript = @"
 Set-Location "$REPO_DIR"
 git pull origin master
 "@
 $pullScript | Out-File "$REPO_DIR\auto_pull.ps1" -Encoding UTF8
 
-# 建立排程：每天 12:00 自動 pull
+# 排程：每天 12:00，錯過就一連網補跑
 $action = New-ScheduledTaskAction `
     -Execute "powershell.exe" `
     -Argument "-NonInteractive -WindowStyle Hidden -File `"$REPO_DIR\auto_pull.ps1`""
@@ -30,8 +30,8 @@ Register-ScheduledTask `
     -Action $action `
     -Trigger $trigger `
     -Settings $settings `
-    -Description "Daily 12:00: git pull from GitHub" `
+    -Description "Daily 12:00: git pull, retry when network available" `
     -Force
 
 Write-Host "Done! Repo: $REPO_DIR"
-Write-Host "Auto pull scheduled daily at 12:00"
+Write-Host "Auto pull: daily 12:00, retries when network connects"
