@@ -1,0 +1,43 @@
+# 圖片檔案
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.webp
+*.svg
+*.ico
+*.tiff
+*.tif
+*.heic
+*.heif
+*.raw
+*.cr2
+*.nef
+
+# 影片檔案
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+*.flv
+*.m4v
+*.webm
+*.ts
+*.mts
+*.m2ts
+*.3gp
+*.ogv
+*.mpg
+*.mpeg
+
+# 音訊檔案（通常也不需要同步）
+*.mp3
+*.wav
+*.aac
+*.flac
+*.ogg
+*.m4a
+
+# 僅保留 .md 和 .ps1 — 無需額外設定，上方規則已排除其他類型

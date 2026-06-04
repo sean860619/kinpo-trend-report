@@ -69,6 +69,18 @@ Workflow: `open` → `snapshot` → read `@eN` refs → interact → `snapshot` 
 
 - `/morning` — 早晨日報：讀取 Gmail（昨日）、Google Calendar（今日）、Notion 任務，彙整成每日摘要
 
+## LibTV 工作規則
+
+使用 LibTV 進行 AI 創作時，請遵守 @LIBTV.md 的所有規則。
+核心：**先規劃企劃表 → 使用者確認 → 才執行 CLI 指令。**
+
+## LibTV CLI Skill（官方完整指令文件）
+
+@.libtv-skill/SKILL.md
+
+操作 LibTV CLI 時，以上方官方 Skill 文件為準；指令細節參考 `.libtv-skill/commands/`，範例參考 `.libtv-skill/examples/`。
+CLI 執行路徑：`C:\Users\User\.libtv\libtv.exe`
+
 ## Interaction Rules
 
 - 修改檔案前，先列出要動哪些檔案，等確認再動
