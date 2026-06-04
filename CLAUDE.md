@@ -81,6 +81,30 @@ Workflow: `open` → `snapshot` → read `@eN` refs → interact → `snapshot` 
 操作 LibTV CLI 時，以上方官方 Skill 文件為準；指令細節參考 `.libtv-skill/commands/`，範例參考 `.libtv-skill/examples/`。
 CLI 執行路徑：`C:\Users\User\.libtv\libtv.exe`
 
+## 自動備份設定
+
+每天 12:00 自動執行（錯過時一連網就補跑）：
+
+| 排程名稱 | 功能 | 腳本 |
+|---|---|---|
+| `GitAutoCommit-SeanAgent` | git commit + push 到 GitHub | `auto_commit.ps1` |
+| `SyncToDrive-SeanAgent` | 同步 `.md`/`.ps1` 到 Google Drive | `sync_to_drive.ps1` |
+
+### GitHub
+- Remote：`https://github.com/sean860619/kinpo-trend-report.git`
+- Branch：`master`
+- 備份範圍：`.md`、`.ps1`（圖片/影片由 `.gitignore` 排除）
+
+### Google Drive
+- 工具：rclone v1.74.2（位於 `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Rclone.Rclone_*\`）
+- Remote 名稱：`gdrive`
+- Drive 目標資料夾：`Sean-windows-agent`
+- 備份範圍：`.md`、`.ps1`
+
+### 其他裝置自動同步
+- **另一台 Windows**：執行 `setup_autopull_windows.ps1`，Repo 位置 `~/Documents/sean-agent`
+- **Mac**：執行 `setup_autopull_mac.sh`，使用 launchd，登入時 + 每天 12:00 補跑
+
 ## Interaction Rules
 
 - 修改檔案前，先列出要動哪些檔案，等確認再動
