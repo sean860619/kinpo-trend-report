@@ -105,6 +105,31 @@ CLI 執行路徑：`C:\Users\User\.libtv\libtv.exe`
 - **另一台 Windows**：執行 `setup_autopull_windows.ps1`，Repo 位置 `~/Documents/sean-agent`
 - **Mac**：執行 `setup_autopull_mac.sh`，使用 launchd，登入時 + 每天 12:00 補跑
 
+## Context 管理與 Session 延續
+
+### 自動 Compact 規則
+- 當 context 使用量超過 80% 時，**必須**在回覆末尾加上以下提醒區塊，讓使用者直接按 Enter 執行：
+
+```
+⚠️ Context 已超過 80%，建議立即執行 Compact：
+
+/compact
+```
+
+- /compact 執行後，立即將當前 session 進度摘要寫入專案資料夾的 `SESSION_LOG.md`
+- `SESSION_LOG.md` 每次更新必須包含以下三個區塊：
+  - **已完成**：這次 session 做了什麼
+  - **當前進度**：目前進行到哪一步、相關節點 ID / 檔案路徑
+  - **下一步**：下個 session 要繼續做什麼
+
+### 新 Session 啟動規則
+- 每次開新 session 時，自動掃描當前專案資料夾內所有 `.md` 檔（包含子目錄）
+- 將這些 `.md` 檔的內容作為背景知識載入，特別優先讀取：
+  - `SESSION_LOG.md`（上次進度）
+  - `CLAUDE.md`（專案規則）
+  - 任何含 `MV`、`VOID`、`project`、`plan` 字樣的 `.md` 檔
+- 讀取完畢後，告訴使用者「已載入上次進度，從 [下一步] 繼續」，然後直接繼續
+
 ## Interaction Rules
 
 - 修改檔案前，先列出要動哪些檔案，等確認再動
