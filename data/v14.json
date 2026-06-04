@@ -1,0 +1,52 @@
+﻿{
+  "nodeKey": "003ee216-c384-44dc-bb36-d4a7d9669faa",
+  "data": {
+    "type": "video",
+    "name": "VOID-V14-FinalChorus-FemaleRise",
+    "url": [
+      "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/3c0627a75853c96389f4d5b0492f3075f1784b276273ee148483e3f9f07f4504.mp4"
+    ],
+    "poster": "",
+    "action": "video_generate",
+    "generatorType": "default",
+    "params": {
+      "prompt": "Korean female model, medium close up, smooth slow tilt up from chin to eyes looking upward, intense blue light shafts piercing from above, tears catching light, emotional release ascending movement, final chorus power moment, cinematic slow motion",
+      "model": "wanxiang-v2-6",
+      "modeType": "frames2video",
+      "count": 1,
+      "imageList": [
+        {
+          "nodeId": "a00e913e-6eca-49af-9e57-f9d0c6de35d4",
+          "url": "https://libtv-res.liblib.art/upload-images/a088e7b0de6e4ffdbaabb9d602864978/cc2f42db0bd78d9e3dd747bce608ac0c40690c2c.png"
+        }
+      ],
+      "videoList": [],
+      "audioList": [],
+      "settings": {
+        "ratio": "auto",
+        "resolution": "1080P",
+        "duration": 5,
+        "enableSound": "on"
+      },
+      "advancedSettings": {
+        "multiClip": 1
+      },
+      "textList": []
+    },
+    "taskInfo": {
+      "taskId": "20260603145503124605234",
+      "loading": false,
+      "status": 2,
+      "progressPercent": 100
+    },
+    "resourceMeta": {
+      "items": [
+        {
+          "kind": "video"
+        }
+      ]
+    }
+  },
+  "nodeType": "video",
+  "name": "VOID-V14-FinalChorus-FemaleRise"
+}

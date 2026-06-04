@@ -1,0 +1,56 @@
+﻿{
+  "query": "image",
+  "matchKind": "modelName",
+  "matches": [
+    {
+      "modelKey": "lib-image-2",
+      "modelName": "Lib Image",
+      "description": "??啣?芋???賢?蝒",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://liblibai-online.liblib.cloud/img/26867b52384f44d6ad5f717dbd710ff7/44e937c59a92e1316948f60d25f5b3ef3c2ea3f6ead2178ef7b85f4cd6b055aa.png",
+      "estimatedTime": "60s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "z-image",
+      "modelName": "Z-image Turbo",
+      "description": "???????????,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/edd01cd754fe106fdaecfe65f89bde412ceb4343.png",
+      "estimatedTime": "10s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "qwen",
+      "modelName": "Qwen Image",
+      "description": "Qwen ?璅∪?嚗?摮???撩",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/d031349093e34e87240f833e6299223cbac7fc06.png",
+      "estimatedTime": "60s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "lib-image-2",
+      "modelName": "Lib Image",
+      "description": "??啣?芋???賢?蝒",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://liblibai-online.liblib.cloud/img/26867b52384f44d6ad5f717dbd710ff7/169b2f96d37cbaef64357af911bd38fd954314cafa7afc2512d1bb9164aab45f.png",
+      "estimatedTime": "60s",
+      "supportModality": "scriptImage"
+    },
+    {
+      "modelKey": "z-image",
+      "modelName": "Z Image Turbo",
+      "description": "???????????,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/edd01cd754fe106fdaecfe65f89bde412ceb4343.png",
+      "estimatedTime": "10s",
+      "supportModality": "scriptImage"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+﻿{
+  "nodeKey": "52742032-2e13-4538-8468-91f5241c1957",
+  "data": {
+    "type": "video",
+    "name": "VOID-V07-Verse-MaleWalk",
+    "url": [
+      "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/23dfbeaa72855fa4d8b84a9837013aec903ab026d8a11b2261832d251c2c247e.mp4"
+    ],
+    "poster": "",
+    "action": "video_generate",
+    "generatorType": "default",
+    "params": {
+      "prompt": "Korean male model, side profile slow walk, smooth lateral tracking shot, heavy rain streaks, water droplets on dark leather jacket, neon light reflections on wet pavement, slow steady cinematic movement, dark hip hop MV atmosphere",
+      "model": "wanxiang-v2-6",
+      "modeType": "frames2video",
+      "count": 1,
+      "imageList": [
+        {
+          "nodeId": "a67306a2-571d-4ce9-8f7a-e2eaf06eaf5b",
+          "url": "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/image/a088e7b0de6e4ffdbaabb9d602864978/748004857_5ea116a8b6ea4ad49afec5a16d2caa13.png"
+        }
+      ],
+      "videoList": [],
+      "audioList": [],
+      "settings": {
+        "ratio": "auto",
+        "resolution": "1080P",
+        "duration": 5,
+        "enableSound": "on"
+      },
+      "advancedSettings": {
+        "multiClip": 1
+      },
+      "textList": []
+    },
+    "taskInfo": {
+      "taskId": "20260603144903777755234",
+      "loading": false,
+      "status": 2,
+      "progressPercent": 100
+    },
+    "resourceMeta": {
+      "items": [
+        {
+          "kind": "video"
+        }
+      ]
+    }
+  },
+  "nodeType": "video",
+  "name": "VOID-V07-Verse-MaleWalk"
+}

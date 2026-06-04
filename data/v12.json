@@ -1,0 +1,52 @@
+﻿{
+  "nodeKey": "b9dd09ee-5361-47af-b266-00955c96a71c",
+  "data": {
+    "type": "video",
+    "name": "VOID-V12-Chorus-Spin",
+    "url": [
+      "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/d6c18cf14095a3ed4b2fe700e05babafa60eaeceb43c6bade6ae343e4445853f.mp4"
+    ],
+    "poster": "",
+    "action": "video_generate",
+    "generatorType": "default",
+    "params": {
+      "prompt": "Korean female model, half body, smooth slow rotation in place, dark velvet dress fabric billowing outward, blue glowing particles scattering, dark smoke swirling, ethereal slow motion, smooth continuous circular camera orbit, chorus emotional peak energy",
+      "model": "wanxiang-v2-6",
+      "modeType": "frames2video",
+      "count": 1,
+      "imageList": [
+        {
+          "nodeId": "9e39611f-1c99-4fb8-9319-c34756549cad",
+          "url": "https://libtv-res.liblib.art/upload-images/a088e7b0de6e4ffdbaabb9d602864978/ff84eb89b27c13801d2ab315ef622ad14af7faa5.png"
+        }
+      ],
+      "videoList": [],
+      "audioList": [],
+      "settings": {
+        "ratio": "auto",
+        "resolution": "1080P",
+        "duration": 5,
+        "enableSound": "on"
+      },
+      "advancedSettings": {
+        "multiClip": 1
+      },
+      "textList": []
+    },
+    "taskInfo": {
+      "taskId": "20260603145303263235234",
+      "loading": false,
+      "status": 2,
+      "progressPercent": 100
+    },
+    "resourceMeta": {
+      "items": [
+        {
+          "kind": "video"
+        }
+      ]
+    }
+  },
+  "nodeType": "video",
+  "name": "VOID-V12-Chorus-Spin"
+}

@@ -1,0 +1,52 @@
+﻿{
+  "nodeKey": "cdcb7c20-c32a-44ec-b802-4dba728f64d6",
+  "data": {
+    "type": "video",
+    "name": "VOID-V16-FinalChorus-Fade",
+    "url": [
+      "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/7ab9738ce3b90db6a33b63271ebc1278799b6f61ef1897b34e1a6600709cb880.mp4"
+    ],
+    "poster": "",
+    "action": "video_generate",
+    "generatorType": "default",
+    "params": {
+      "prompt": "Korean female model, close up outstretched hand reaching slowly upward, smooth gentle zoom out, fingers dissolving into glowing blue particles, dark void background, final moment of release, ethereal fade out, cinematic VOID title energy",
+      "model": "wanxiang-v2-6",
+      "modeType": "frames2video",
+      "count": 1,
+      "imageList": [
+        {
+          "nodeId": "2e33d1f4-e2e4-45f2-9239-d1560335d220",
+          "url": "https://libtv-res.liblib.art/upload-images/a088e7b0de6e4ffdbaabb9d602864978/2c95f810f5fb2ab9a64a2a0323fe74692ad41f31.png"
+        }
+      ],
+      "videoList": [],
+      "audioList": [],
+      "settings": {
+        "ratio": "auto",
+        "resolution": "1080P",
+        "duration": 5,
+        "enableSound": "on"
+      },
+      "advancedSettings": {
+        "multiClip": 1
+      },
+      "textList": []
+    },
+    "taskInfo": {
+      "taskId": "20260603145703491225234",
+      "loading": false,
+      "status": 2,
+      "progressPercent": 100
+    },
+    "resourceMeta": {
+      "items": [
+        {
+          "kind": "video"
+        }
+      ]
+    }
+  },
+  "nodeType": "video",
+  "name": "VOID-V16-FinalChorus-Fade"
+}

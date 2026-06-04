@@ -1,0 +1,52 @@
+﻿{
+  "nodeKey": "a0f810c2-385f-49aa-9c8c-07ab1cd9dd62",
+  "data": {
+    "type": "video",
+    "name": "VOID-V09-Verse-FaceTurn",
+    "url": [
+      "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/video/a088e7b0de6e4ffdbaabb9d602864978/c8dcc6c5c1208c3a166d54ff83b819c151a33620631152fb42b4c2021b281cfe.mp4"
+    ],
+    "poster": "",
+    "action": "video_generate",
+    "generatorType": "default",
+    "params": {
+      "prompt": "Korean female model, side profile, smooth slow head turn toward camera, smoke wisps drifting across face, cold blue backlight outlining silhouette, gentle smooth camera push forward, melancholic empty expression, dark gothic atmosphere",
+      "model": "wanxiang-v2-6",
+      "modeType": "frames2video",
+      "count": 1,
+      "imageList": [
+        {
+          "nodeId": "061ebdb5-4688-4d0e-8789-ec726510fccb",
+          "url": "https://libtv-res.liblib.art/sd-gen-save-img/genius_playground/image/a088e7b0de6e4ffdbaabb9d602864978/747993829_7b4448b7b0d74dc7a0019da640b93371.png"
+        }
+      ],
+      "videoList": [],
+      "audioList": [],
+      "settings": {
+        "ratio": "auto",
+        "resolution": "1080P",
+        "duration": 5,
+        "enableSound": "on"
+      },
+      "advancedSettings": {
+        "multiClip": 1
+      },
+      "textList": []
+    },
+    "taskInfo": {
+      "taskId": "20260603145103946125234",
+      "loading": false,
+      "status": 2,
+      "progressPercent": 100
+    },
+    "resourceMeta": {
+      "items": [
+        {
+          "kind": "video"
+        }
+      ]
+    }
+  },
+  "nodeType": "video",
+  "name": "VOID-V09-Verse-FaceTurn"
+}

@@ -1,0 +1,11 @@
+﻿libtv.exe : ?冽?嚗ibtv model search <name...>
+位於 線路:1 字元:1
++ & 'C:\Users\User\.libtv\libtv.exe' model search 2>&1 | Out-File 'C:\U ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (?冽?嚗ibtv model search <name...>:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+??libtv model search --type <node-type> [name...]
+蝷箔?嚗ibtv model search qwen
+蝷箔?嚗ibtv model search --type image qwen
+蝷箔?嚗ibtv model search --type image

@@ -1,0 +1,137 @@
+﻿{
+  "nodeType": "image",
+  "query": "",
+  "matchKind": "all",
+  "matches": [
+    {
+      "modelKey": "nebula-ultra",
+      "modelName": "Lib Navo Pro",
+      "description": "?撘箏??颲芋??銝?湔批末",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://liblibai-online.liblib.cloud/img/26867b52384f44d6ad5f717dbd710ff7/a648ead572dfc3292bf97afa915056222848383e345a342d6aa06ae0adf96899.png",
+      "estimatedTime": "50s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "lib-image-2",
+      "modelName": "Lib Image",
+      "description": "??啣?芋???賢?蝒",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://liblibai-online.liblib.cloud/img/26867b52384f44d6ad5f717dbd710ff7/44e937c59a92e1316948f60d25f5b3ef3c2ea3f6ead2178ef7b85f4cd6b055aa.png",
+      "estimatedTime": "60s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "nebula-2-flash",
+      "modelName": "Lib Navo 2",
+      "description": "?舀????揣??摮?蝖柴漲?游翰",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://liblibai-online.liblib.cloud/img/26867b52384f44d6ad5f717dbd710ff7/a648ead572dfc3292bf97afa915056222848383e345a342d6aa06ae0adf96899.png",
+      "estimatedTime": "25s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "jimeng-4.6",
+      "modelName": "Seedream 4.6",
+      "description": "??鈭箏?銝?湔扼像?Ｚ挽霈⊥???,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/43df57d720f983795db62c96952a44a86d1bc27a.png",
+      "estimatedTime": "20s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "seedream-5",
+      "modelName": "Seedream 5.0 Lite",
+      "description": "?舀????揣嚗??蹂葉撘??潦恣蝢???,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/43df57d720f983795db62c96952a44a86d1bc27a.png",
+      "estimatedTime": "20s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "seedream-4.5",
+      "modelName": "Seedream 4.5",
+      "description": "憭??脖??湔扼??蹂葉撘???,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/43df57d720f983795db62c96952a44a86d1bc27a.png",
+      "estimatedTime": "15s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "mj-v7",
+      "modelName": "Midjourney V7",
+      "description": "?雿喟?摮佗??萄蔣韐冽?嚗???撩",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/904937c79884f5282e4566fc0e28a3f643a3c7ff.png",
+      "estimatedTime": "50s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "mj-niji7",
+      "modelName": "Midjourney Niji 7",
+      "description": "?冽憤擃恣蝢芋??憌憭",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/904937c79884f5282e4566fc0e28a3f643a3c7ff.png",
+      "estimatedTime": "50s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "z-image",
+      "modelName": "Z-image Turbo",
+      "description": "???????????,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/edd01cd754fe106fdaecfe65f89bde412ceb4343.png",
+      "estimatedTime": "10s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "nebula-core",
+      "modelName": "Lib Navo",
+      "description": "?曉?蝻?璅∪? 霂凋??圾撘?,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://liblibai-online.liblib.cloud/img/26867b52384f44d6ad5f717dbd710ff7/a648ead572dfc3292bf97afa915056222848383e345a342d6aa06ae0adf96899.png",
+      "estimatedTime": "50s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "qwen",
+      "modelName": "Qwen Image",
+      "description": "Qwen ?璅∪?嚗?摮???撩",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/d031349093e34e87240f833e6299223cbac7fc06.png",
+      "estimatedTime": "60s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "qwen-edit",
+      "modelName": "Qwen Edit",
+      "description": "Qwen蝟餌?颲芋??蝎曄??舀",
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/d031349093e34e87240f833e6299223cbac7fc06.png",
+      "estimatedTime": "60s",
+      "supportModality": "image"
+    },
+    {
+      "modelKey": "seedream-4",
+      "modelName": "Seedream 4.0",
+      "description": "??韐典?橘??舀?銝剜???銝絲?亥挽霈?,
+      "prefix": [],
+      "labels": [],
+      "icon": "https://libtv-res.liblib.art/upload-images/70a305c50c704a778db114468830617b/43df57d720f983795db62c96952a44a86d1bc27a.png",
+      "estimatedTime": "15s",
+      "supportModality": "image"
+    }
+  ]
+}
