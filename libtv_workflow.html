@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibTV 腳本節點完整流程</title>
+<style>
+:root {
+  --bg: #0d0d12;
+  --s1: #161620;
+  --s2: #1e1e2a;
+  --s3: #252535;
+  --border: #2a2a3e;
+  --accent: #7c5cfc;
+  --accent-soft: rgba(124,92,252,.15);
+  --green: #22c55e;
+  --green-soft: rgba(34,197,94,.12);
+  --yellow: #f59e0b;
+  --yellow-soft: rgba(245,158,11,.12);
+  --red: #ef4444;
+  --red-soft: rgba(239,68,68,.12);
+  --blue: #38bdf8;
+  --blue-soft: rgba(56,189,248,.12);
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --muted2: #475569;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', 'PingFang TC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 270px; min-height: 100vh; background: var(--s1);
+  border-right: 1px solid var(--border); position: fixed;
+  top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 20;
+}
+.logo { padding: 20px 18px 16px; border-bottom: 1px solid var(--border); }
+.logo h2 { font-size: 14px; font-weight: 800; color: #a78bfa; display: flex; align-items: center; gap: 6px; }
+.logo p { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* Progress */
+.prog-wrap { margin: 12px; background: var(--s2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.prog-bar-bg { background: var(--s3); border-radius: 6px; height: 6px; margin-top: 8px; }
+.prog-bar-fill { background: linear-gradient(90deg, var(--accent), #a78bfa); height: 6px; border-radius: 6px; transition: width .4s ease; }
+.prog-label { display: flex; justify-content: space-between; font-size: 11px; }
+.prog-label .done-count { color: #a78bfa; font-weight: 700; }
+.prog-label .total { color: var(--muted); }
+
+/* Nav */
+.nav { padding: 10px 8px; }
+.nav-group-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; padding: 12px 10px 4px; }
+.nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 7px; cursor: pointer;
+  font-size: 12.5px; color: var(--muted); text-decoration: none;
+  transition: all .15s; position: relative;
+}
+.nav-item:hover { background: var(--s2); color: var(--text); }
+.nav-item.active { background: var(--accent-soft); color: #a78bfa; }
+.nav-item.done-nav { color: var(--green); }
+.nav-num {
+  width: 20px; height: 20px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-size: 10px;
+  font-weight: 700; flex-shrink: 0; background: var(--s3);
+  border: 1.5px solid var(--border); color: var(--muted2);
+}
+.nav-item.active .nav-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.nav-item.done-nav .nav-num { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* ─── Main ─── */
+.main { margin-left: 270px; flex: 1; padding: 28px 32px 80px; max-width: 960px; }
+
+.page-header { margin-bottom: 28px; }
+.page-header h1 { font-size: 24px; font-weight: 800; line-height: 1.2; }
+.page-header h1 span { color: #a78bfa; }
+.page-header p { color: var(--muted); margin-top: 6px; font-size: 13px; }
+.header-links { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.header-links a {
+  font-size: 11.5px; padding: 4px 12px; border-radius: 20px;
+  border: 1px solid var(--border); color: #a78bfa; text-decoration: none;
+  background: var(--accent-soft); transition: background .15s;
+}
+.header-links a:hover { background: rgba(124,92,252,.25); }
+
+/* Phase label */
+.phase-label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); margin: 24px 0 10px;
+}
+.phase-label::before, .phase-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ─── Step Card ─── */
+.card {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 14px; margin-bottom: 12px; overflow: hidden;
+  transition: border-color .2s, box-shadow .2s; scroll-margin-top: 20px;
+}
+.card.open { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.card.done-card { border-color: rgba(34,197,94,.35); }
+.card.open.done-card { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-soft); }
+
+.card-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; cursor: pointer; user-select: none;
+}
+.card-icon {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; background: var(--s2); border: 1.5px solid var(--border);
+}
+.card.open .card-icon { border-color: var(--accent); background: var(--accent-soft); }
+.card.done-card .card-icon { border-color: var(--green); background: var(--green-soft); }
+.card-info { flex: 1; min-width: 0; }
+.card-info h3 { font-size: 14px; font-weight: 700; }
+.card-info p { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.card-right { display: flex; align-items: center; gap: 8px; }
+.tag {
+  font-size: 10.5px; font-weight: 700; padding: 3px 9px;
+  border-radius: 20px; white-space: nowrap;
+}
+.tag-purple { background: var(--accent-soft); color: #a78bfa; border: 1px solid rgba(124,92,252,.3); }
+.tag-green { background: var(--green-soft); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+.tag-yellow { background: var(--yellow-soft); color: var(--yellow); border: 1px solid rgba(245,158,11,.3); }
+.tag-red { background: var(--red-soft); color: var(--red); border: 1px solid rgba(239,68,68,.3); }
+.chevron { font-size: 10px; color: var(--muted); transition: transform .2s; }
+.card.open .chevron { transform: rotate(180deg); }
+
+.card-body { display: none; padding: 0 18px 18px; }
+.card.open .card-body { display: block; }
+.card-divider { height: 1px; background: var(--border); margin: 0 18px 16px; }
+
+/* ─── Steps inside card ─── */
+.steps-list { list-style: none; counter-reset: step; }
+.step-item {
+  display: flex; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); cursor: pointer;
+  transition: opacity .15s;
+}
+.step-item:last-child { border-bottom: none; }
+.step-item.checked { opacity: .55; }
+.step-cb {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  border: 1.5px solid var(--border); background: var(--s2);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px; transition: all .15s;
+}
+.step-item.checked .step-cb { background: var(--green); border-color: var(--green); }
+.step-cb-tick { display: none; width: 6px; height: 10px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); }
+.step-item.checked .step-cb-tick { display: block; }
+.step-text { flex: 1; }
+.step-text .main-text { font-size: 13.5px; line-height: 1.55; }
+.step-text .sub-text { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.step-text .sub-text code { background: var(--s3); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #a78bfa; font-family: 'SF Mono', monospace; }
+
+/* Tips */
+.tip-box {
+  display: flex; gap: 10px; padding: 11px 13px; border-radius: 8px;
+  font-size: 12.5px; line-height: 1.6; margin: 12px 0;
+}
+.tip-box.info { background: var(--blue-soft); border-left: 3px solid var(--blue); }
+.tip-box.warn { background: var(--yellow-soft); border-left: 3px solid var(--yellow); }
+.tip-box.danger { background: var(--red-soft); border-left: 3px solid var(--red); }
+.tip-box.success { background: var(--green-soft); border-left: 3px solid var(--green); }
+.tip-box.purple { background: var(--accent-soft); border-left: 3px solid var(--accent); }
+.tip-box .tip-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.tip-box .tip-content strong { display: block; margin-bottom: 3px; }
+
+/* Flow path visual */
+.flow-path {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; margin: 10px 0; padding: 10px 12px;
+  background: var(--s2); border-radius: 8px; border: 1px solid var(--border);
+}
+.flow-node {
+  font-size: 11.5px; padding: 4px 10px; border-radius: 6px;
+  background: var(--s3); border: 1px solid var(--border); color: var(--text);
+  white-space: nowrap;
+}
+.flow-node.hl { background: var(--accent-soft); border-color: rgba(124,92,252,.4); color: #a78bfa; font-weight: 700; }
+.flow-node.done-node { background: var(--green-soft); border-color: rgba(34,197,94,.4); color: var(--green); }
+.flow-arrow { color: var(--muted); font-size: 12px; }
+
+/* Table */
+.info-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; }
+.info-table th { background: var(--s2); padding: 7px 12px; text-align: left; color: var(--muted); font-weight: 600; border: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.info-table td { padding: 8px 12px; border: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+.info-table td:first-child { color: #a78bfa; font-weight: 600; white-space: nowrap; }
+
+/* Complete btn */
+.actions { margin-top: 14px; display: flex; gap: 8px; align-items: center; }
+.btn-done {
+  padding: 7px 18px; border-radius: 7px; font-size: 12.5px;
+  font-weight: 700; cursor: pointer; border: none; transition: all .15s;
+  background: var(--accent); color: #fff;
+}
+.btn-done:hover { background: #6a4ae8; }
+.btn-done.undone { background: var(--s2); color: var(--muted); border: 1px solid var(--border); }
+.btn-done.undone:hover { background: var(--s3); color: var(--text); }
+.done-badge { font-size: 12px; color: var(--green); font-weight: 600; display: none; }
+.card.done-card .done-badge { display: block; }
+
+/* Keyboard shortcut */
+.kbd {
+  display: inline-block; padding: 1px 7px; border-radius: 4px;
+  background: var(--s2); border: 1px solid var(--border);
+  font-size: 11px; font-family: monospace; color: var(--text);
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--green); color: #fff; padding: 12px 20px;
+  border-radius: 10px; font-size: 13.5px; font-weight: 700;
+  box-shadow: 0 8px 30px rgba(0,0,0,.5); z-index: 100;
+  transform: translateY(20px); opacity: 0;
+  transition: all .3s ease; pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <h2>🎬 LibTV 腳本節點</h2>
+    <p>完整操作流程 · 互動勾選版</p>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-label">
+      <span class="done-count" id="doneCount">0 步完成</span>
+      <span class="total" id="totalCount">共 0 項</span>
+    </div>
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <nav class="nav" id="navEl"></nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="page-header">
+    <h1>LibTV <span>腳本節點</span> 完整操作流程</h1>
+    <p>從劇本輸入 → 確認鏡頭 → 生成分鏡 → 轉換影片，每一步都可勾選確認</p>
+    <div class="header-links">
+      <a href="https://www.liblib.tv/" target="_blank">🌐 LibTV 官網</a>
+      <a href="https://resonate.feishu.cn/wiki/Loxfw6XHziYRk0kKzdjcFfp9nhb" target="_blank">📖 原版文件</a>
+    </div>
+  </div>
+
+  <!-- 全覽流程圖 -->
+  <div class="flow-path" id="globalFlow"></div>
+
+  <div id="cardsWrap"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────
+const PHASES = [
+  {
+    label: '準備階段',
+    cards: [
+      {
+        id: 'c0', icon: '🌐', title: '進入畫布', desc: '登入並開啟新畫布',
+        tag: '前置', tagClass: 'tag-purple',
+        steps: [
+          { text: '打開 liblib.tv（建議 Chrome / Edge）' },
+          { text: '登入帳號，確認會員方案', sub: 'Seedance 2.0 需要「團隊版」；可一人使用不加子帳號' },
+          { text: '點擊「新建畫布」建立工作區' },
+        ],
+        tips: [
+          { type: 'info', icon: '💡', title: '快捷操作', body: '畫布空白處雙擊可快速新建節點；Ctrl/Cmd+G 打組；Shift+Alt+F 自動整理布局' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '腳本生成',
+    cards: [
+      {
+        id: 'c1', icon: '📝', title: '建立腳本節點，輸入劇本', desc: '右鍵 → 添加節點 → 脚本',
+        tag: '必要', tagClass: 'tag-red',
+        flow: ['畫布右鍵', '添加節點', '脚本', '上傳劇本', '點擊生成'],
+        steps: [
+          { text: '在畫布空白處按右鍵', sub: '或雙擊 → 選擇節點類型' },
+          { text: '選擇「添加節點」→「脚本」', sub: '建立腳本節點 V2' },
+          { text: '選擇生成方式：', sub: '① 上傳剧本生成分镜脚本（最常用）\n② 通过角色生成分镜脚本（有角色圖時選此）' },
+          { text: '將劇本文字貼入或上傳文字稿', sub: '建議分段輸入，過長（5分鐘以上）可能生成不完整' },
+          { text: '（可選）同時上傳角色/場景/道具參考圖', sub: '有角色圖時風格一致性更好' },
+          { text: '點擊「生成」按鈕，等待 AI 拆解分鏡', sub: 'AI 會自動解析每個鏡頭的畫面描述、景別、光影、對白、音效、運鏡' },
+        ],
+        tips: [
+          { type: 'warn', icon: '⚠️', title: '注意', body: '若劇本內無角色圖，AI 生成的分鏡風格可能不一致（例如混入真人畫面）。建議一定要準備角色三視圖作為參考。' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '確認鏡頭（全螢幕視圖）',
+    cards: [
+      {
+        id: 'c2', icon: '🔍', title: '開啟全螢幕視圖', desc: '點擊腳本節點右上角「全螢幕」按鈕',
+        tag: '必要', tagClass: 'tag-red',
+        flow: ['點擊腳本節點', '右上角全螢幕 ⛶', '瀏覽完整分鏡表'],
+        steps: [
+          { text: '在畫布上找到腳本節點，點擊它' },
+          { text: '點擊節點右上角的「全螢幕」(⛶) 按鈕', sub: '進入全螢幕檢視，可看到完整的分鏡表格資訊' },
+          { text: '全螢幕視圖中可看到：', sub: '• 每個鏡頭的畫面描述、景別、光影\n• 角色/場景/道具資產卡片\n• 最終提示詞欄位' },
+        ],
+        tips: [
+          { type: 'purple', icon: '📋', title: '全螢幕視圖包含', body: '完整分鏡表格（可修改文字）、參考圖替換、資產管理、提示詞合成，是整個腳本節點的核心操作介面。' },
+        ]
+      },
+      {
+        id: 'c3', icon: '✏️', title: '修改腳本內容', desc: '雙擊表格欄位直接編輯，點確認鏡頭頁籤',
+        tag: '必要', tagClass: 'tag-red',
+        flow: ['打開腳本節點', '確認鏡頭', '雙擊欄位', '直接修改'],
+        steps: [
+          { text: '點擊腳本節點 → 進入「確認鏡頭」頁籤' },
+          { text: '雙擊任何需要修改的欄位', sub: '可修改：畫面描述、景別、光影、對白、音效、運鏡等所有欄位' },
+          { text: '直接輸入修改內容後按 Enter 或點其他地方確認' },
+          { text: '新增鏡頭：點左下角「+ 添加鏡頭」', sub: '可隨時手動增加分鏡' },
+          { text: '調整鏡頭順序：長按鏡號前的「小手」區域，拖拽到目標位置' },
+          { text: '替換參考圖：點擊鏡頭的圖片區域可上傳或替換', sub: '全螢幕視圖中也支援直接替換參考圖像' },
+        ],
+        tips: [
+          { type: 'success', icon: '✅', title: '修改技巧', body: '這是控制畫面最關鍵的步驟！在這裡調整比生成後重改便宜得多。有任何細節調整都建議在這一步完成。' },
+          { type: 'warn', icon: '⚠️', title: '常見問題', body: '修改後若要重新生成分鏡，需重新進行「提示詞合成」步驟，否則生成結果仍基於舊提示詞。' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '資產準備',
+    cards: [
+      {
+        id: 'c4', icon: '🎭', title: '準備角色 / 場景 / 道具資產', desc: '為每個鏡頭建立視覺一致的參考圖',
+        tag: '必要', tagClass: 'tag-red',
+        flow: ['打開腳本節點', '準備資產', 'AI生成 / 上傳 / 歷史庫'],
+        steps: [
+          { text: '進入腳本節點的「準備資產」頁籤' },
+          { text: '為每個角色/場景/道具選擇資產來源：', sub: '① AI 生成：輸入描述讓 AI 直接生成\n② 本次上傳：從電腦上傳圖片\n③ 歷史記錄上傳：從素材庫選取' },
+          { text: '（推薦）使用「角色三視圖」生成正/側/背三張圖', sub: '圖片節點右鍵 → Slash 功能 → 角色三視圖\n完成後作為資產上傳，大幅提升一致性' },
+          { text: '確認每張圖符合劇本中的描述' },
+          { text: '若要固定場景：用「全景功能」生成場景圖，截圖後作為資產' },
+        ],
+        tips: [
+          { type: 'info', icon: '💡', title: '一致性秘訣', body: '角色參考圖越精準，批量生成時角色一致性越高。建議準備「角色三視圖」（正面+側面+背面），讓 AI 有充分參考。' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '提示詞合成',
+    cards: [
+      {
+        id: 'c5', icon: '✍️', title: '合成每個鏡頭的提示詞', desc: '單鏡頭確認 → 一鍵合成全部',
+        tag: '必要', tagClass: 'tag-red',
+        flow: ['確認鏡頭內容', '單鏡頭提示詞', '確認連結', '一鍵合成全部'],
+        steps: [
+          { text: '逐一點擊每個鏡號的「待生成提示詞」按鈕', sub: '先逐個確認，避免批量出錯' },
+          { text: '檢查每個鏡頭的「參考圖連結」是否正確', sub: '確認角色/場景圖是否正確連接到對應鏡頭' },
+          { text: '如需使用 Seedance 2.0：點擊「提示詞優化」', sub: '按鈕位於視頻節點生成器下方，自動重寫成 Seedance 2.0 更易執行的結構化格式' },
+          { text: '全部確認無誤後，點「一鍵合成全部提示詞」' },
+        ],
+        tips: [
+          { type: 'danger', icon: '🚨', title: '重要警告', body: '「一鍵合成全部」要謹慎！建議先逐鏡確認再整體合成。若某個鏡頭描述有誤，批量合成後會讓整組提示詞都帶有錯誤。' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '批量生成分鏡圖',
+    cards: [
+      {
+        id: 'c6', icon: '🖼️', title: '批量生成分鏡圖片', desc: '低成本預覽整體畫面效果',
+        tag: '核心', tagClass: 'tag-purple',
+        flow: ['脚本節點', '批量生成分鏡', '選圖片模型', '整組執行'],
+        steps: [
+          { text: '點擊「脚本節點」→ 頂部選「批量生成分鏡」' },
+          { text: '（建議）先生成分鏡圖確認畫面，再轉影片', sub: '分鏡圖積分消耗遠低於影片，適合先確認整體視覺' },
+          { text: '選擇圖片生成模型：', sub: '• Seedream 5.0：主力，高品質\n• Lib Image：中文字/海報設計\n• Seedream 4.6：人像寫真/風格化' },
+          { text: '點擊「整組執行」開始批量生成' },
+          { text: '生成完成後逐一檢視每個鏡頭結果' },
+          { text: '不滿意的鏡頭：修改提示詞後單獨重新生成', sub: '點擊該鏡頭的重新生成按鈕即可' },
+        ],
+        tips: [
+          { type: 'warn', icon: '⚠️', title: '生成前再次確認', body: '批量執行前再確認一次：① 每個鏡頭的參考圖是否連結正確 ② 提示詞是否已全部合成。' },
+          { type: 'info', icon: '📌', title: '分鏡組功能', body: '生成完成後，多選分鏡節點 → 打組 → 合併「分鏡組」，可一鍵導出帶序號的 4K 大圖。' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '分鏡圖 → 影片',
+    cards: [
+      {
+        id: 'c7', icon: '🎥', title: '分鏡圖片轉換為影片', desc: '圖片連接視頻節點，或批量生成視頻',
+        tag: '核心', tagClass: 'tag-purple',
+        flow: ['分鏡圖確認', '批量生成視頻 / 連線視頻節點', '設定模型+時長', '整組執行'],
+        steps: [
+          { text: '方法 A｜批量生成視頻（推薦）：', sub: '點擊「脚本節點」頂部 → 選「批量生成視頻」\nAI 自動基於分鏡脚本資訊將圖像轉換為視頻' },
+          { text: '方法 B｜手動連線：', sub: '在分鏡圖節點右側拉出連線 → 新建「視頻節點」\n圖片自動作為首幀參考' },
+          { text: '設定視頻生成參數：', sub: '• 模型：Seedance 2.0（1080P真人）/ HappyHorse 1.0（最多9張參考圖）/ 可灵 3.0\n• 時長：依鏡頭需求設定\n• 視頻比例：16:9 / 9:16 等' },
+          { text: '輸入畫面動態提示詞（可補充）', sub: '例如：鏡頭緩慢推進、人物微微搖頭等動態描述' },
+          { text: '點擊「生成」或「整組執行」', sub: '批量生成時點「整組執行」；單個節點點節點內的「生成」' },
+          { text: '生成完成後在視頻節點中預覽結果' },
+        ],
+        tips: [
+          { type: 'info', icon: '🎬', title: 'Seedance 2.0 特別說明', body: '目前限「團隊版」用戶使用。支援 1080P、真人生成。提示詞建議先點「提示詞優化」按鈕重寫，效果更好。' },
+          { type: 'purple', icon: '🐴', title: 'HappyHorse 1.0', body: '最多可放 9 張參考圖，適合需要多角色同框或精準控制畫面構成的鏡頭。支援 3–15 秒時長。' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '後製與輸出',
+    cards: [
+      {
+        id: 'c8', icon: '✂️', title: '影片後製（選做）', desc: '合成、剪輯、配音、字幕擦除',
+        tag: '選做', tagClass: 'tag-yellow',
+        steps: [
+          { text: '視頻合成（多片段剪輯）：', sub: '框選多個視頻節點 → 向右拉 → 選「視頻合成」\n支援多軌道（畫中畫）、變速、最長 20 分鐘輸出' },
+          { text: '字幕擦除：視頻節點 → 頂部「字幕擦除」' },
+          { text: '人聲 / 背景音分離：視頻節點右鍵工具', sub: '可單獨保留人聲或背景音' },
+          { text: '配音：新建「音頻節點」→ 選 Minimax Speech 2.8 HD', sub: '300+ 音色，支援情緒/語速/音高調節' },
+          { text: '音色克隆：左側目錄 5.4.1', sub: '錄製聲音樣本建立專屬人聲，後續可重複使用' },
+          { text: '音頻截取 & 變速：音頻節點工具欄' },
+        ],
+        tips: [
+          { type: 'info', icon: '🎵', title: '配音流程', body: '音頻節點 → 選 Minimax Speech 2.8 HD（高品質）或 Turbo（速度快）→ 選音色 → 輸入台詞文字 → 生成語音。' },
+        ]
+      },
+      {
+        id: 'c9', icon: '📦', title: '下載輸出', desc: '匯出分鏡資料與最終影片',
+        tag: '最後', tagClass: 'tag-green',
+        flow: ['確認成品', '下載分鏡+資產', '導出影片'],
+        steps: [
+          { text: '在腳本節點中選「下載分鏡和資產信息」', sub: '一次性下載所有鏡頭的分鏡描述與資產圖片' },
+          { text: '分鏡組 4K 大圖：多選節點 → 打組 → 合併分鏡組 → 一鍵導出' },
+          { text: '最終影片：在「視頻合成」節點點擊「導出」', sub: '支援最長 20 分鐘合成影片' },
+        ],
+        tips: [
+          { type: 'success', icon: '🎉', title: '完成！', body: '建議保留畫布專案，方便之後修改特定鏡頭或重新生成。LibTV 支援跨畫布複製貼上（連線也一起複製）。' },
+        ]
+      }
+    ]
+  }
+];
+
+// ────────────────────────────────────────────
+// STATE
+// ────────────────────────────────────────────
+const raw = JSON.parse(localStorage.getItem('ltv2_state') || '{}');
+const state = {}; // cardId -> Set<stepIdx>
+const cardDone = {}; // cardId -> bool
+
+const allCards = PHASES.flatMap(p => p.cards);
+allCards.forEach(c => {
+  state[c.id] = new Set(raw[c.id]?.steps || []);
+  cardDone[c.id] = raw[c.id]?.done || false;
+});
+
+function save() {
+  const obj = {};
+  allCards.forEach(c => { obj[c.id] = { steps: [...state[c.id]], done: cardDone[c.id] }; });
+  localStorage.setItem('ltv2_state', JSON.stringify(obj));
+}
+
+// ────────────────────────────────────────────
+// BUILD
+// ────────────────────────────────────────────
+function buildGlobalFlow() {
+  const labels = ['建腳本節點', '生成劇本', '確認鏡頭', '全螢幕修改', '準備資產', '合成提示詞', '批量分鏡', '轉換影片', '後製輸出'];
+  const el = document.getElementById('globalFlow');
+  el.innerHTML = labels.map((l, i) => `<span class="flow-node${i===6||i===7?' hl':''}">${l}</span>${i<labels.length-1?'<span class="flow-arrow">›</span>':''}`).join('');
+}
+
+function buildNav() {
+  const nav = document.getElementById('navEl');
+  nav.innerHTML = '';
+  let idx = 0;
+  PHASES.forEach(ph => {
+    const gl = document.createElement('div');
+    gl.className = 'nav-group-label';
+    gl.textContent = ph.label;
+    nav.appendChild(gl);
+    ph.cards.forEach(c => {
+      idx++;
+      const a = document.createElement('a');
+      a.className = 'nav-item' + (cardDone[c.id] ? ' done-nav' : '');
+      a.href = '#' + c.id;
+      a.dataset.id = c.id;
+      a.innerHTML = `<span class="nav-num">${cardDone[c.id] ? '✓' : idx}</span><span style="flex:1">${c.title}</span>`;
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById(c.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        openCard(c.id);
+      });
+      nav.appendChild(a);
+    });
+  });
+}
+
+function buildCards() {
+  const wrap = document.getElementById('cardsWrap');
+  wrap.innerHTML = '';
+  PHASES.forEach(ph => {
+    const pl = document.createElement('div');
+    pl.className = 'phase-label';
+    pl.textContent = ph.label;
+    wrap.appendChild(pl);
+
+    ph.cards.forEach(c => {
+      const done = cardDone[c.id];
+      const el = document.createElement('div');
+      el.className = 'card' + (done ? ' done-card' : '');
+      el.id = c.id;
+
+      const flowHtml = c.flow ? `
+        <div class="flow-path">
+          ${c.flow.map((f,i) => `<span class="flow-node">${f}</span>${i<c.flow.length-1?'<span class="flow-arrow">›</span>':''}`).join('')}
+        </div>` : '';
+
+      const stepsHtml = c.steps.map((s, i) => {
+        const checked = state[c.id].has(i);
+        const sub = s.sub ? s.sub.split('\n').map(l => `<span class="sub-text">${l}</span>`).join('') : '';
+        return `<li class="step-item${checked?' checked':''}" data-card="${c.id}" data-idx="${i}">
+          <span class="step-cb"><span class="step-cb-tick"></span></span>
+          <span class="step-text">
+            <span class="main-text">${s.text}</span>
+            ${s.sub ? `<span class="sub-text">${s.sub.replace(/\n/g,'<br>')}</span>` : ''}
+          </span>
+        </li>`;
+      }).join('');
+
+      const tipsHtml = (c.tips || []).map(t => `
+        <div class="tip-box ${t.type}">
+          <span class="tip-icon">${t.icon}</span>
+          <div class="tip-content"><strong>${t.title}</strong>${t.body}</div>
+        </div>`).join('');
+
+      el.innerHTML = `
+        <div class="card-head">
+          <div class="card-icon">${done ? '✅' : c.icon}</div>
+          <div class="card-info">
+            <h3>${c.title}</h3>
+            <p>${c.desc}</p>
+          </div>
+          <div class="card-right">
+            <span class="tag ${c.tagClass}">${c.tag}</span>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          ${flowHtml}
+          <ul class="steps-list">${stepsHtml}</ul>
+          ${tipsHtml}
+          <div class="actions">
+            <button class="btn-done${done?' undone':''}" data-card="${c.id}">${done?'↩ 標記為未完成':'✓ 標記此步驟完成'}</button>
+            <span class="done-badge">✅ 已完成</span>
+          </div>
+        </div>`;
+      wrap.appendChild(el);
+    });
+  });
+  updateProgress();
+}
+
+function openCard(id) {
+  document.querySelectorAll('.card').forEach(el => {
+    if (el.id === id) el.classList.add('open');
+    else el.classList.remove('open');
+  });
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.id === id);
+  });
+}
+
+function updateProgress() {
+  const total = allCards.length;
+  const done = allCards.filter(c => cardDone[c.id]).length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('doneCount').textContent = done + ' 步完成';
+  document.getElementById('totalCount').textContent = '共 ' + total + ' 步';
+  document.getElementById('progFill').style.width = pct + '%';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ────────────────────────────────────────────
+// EVENTS
+// ────────────────────────────────────────────
+document.getElementById('cardsWrap').addEventListener('click', e => {
+  // Step checkbox
+  const li = e.target.closest('.step-item');
+  if (li) {
+    const { card, idx } = li.dataset;
+    const i = parseInt(idx);
+    if (state[card].has(i)) state[card].delete(i);
+    else state[card].add(i);
+    li.classList.toggle('checked', state[card].has(i));
+    save();
+    return;
+  }
+
+  // Done button
+  const btn = e.target.closest('.btn-done');
+  if (btn) {
+    const id = btn.dataset.card;
+    cardDone[id] = !cardDone[id];
+    save();
+    buildNav();
+    buildCards();
+    openCard(id);
+    if (cardDone[id]) showToast('✅ 步驟完成！繼續下一步');
+    return;
+  }
+
+  // Card header toggle
+  const head = e.target.closest('.card-head');
+  if (head) {
+    const card = head.closest('.card');
+    if (card.classList.contains('open')) card.classList.remove('open');
+    else openCard(card.id);
+  }
+});
+
+// ────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────
+buildGlobalFlow();
+buildNav();
+buildCards();
+openCard(allCards[0].id);
+</script>
+</body>
+</html>

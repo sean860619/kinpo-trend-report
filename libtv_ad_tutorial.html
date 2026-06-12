@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LibTV 廣告MV 完整教程</title>
+<style>
+:root{
+  --bg:#0d0d12;--s1:#161620;--s2:#1e1e2e;--s3:#252535;
+  --accent:#7c5cfc;--accent2:#a78bfa;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--blue:#38bdf8;
+  --text:#e2e8f0;--muted:#94a3b8;--border:#2a2a3e;
+  --r:12px;--font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column}
+
+/* TOP BAR */
+.topbar{background:linear-gradient(135deg,#1a1040,#0d0d12);border-bottom:1px solid var(--border);padding:20px 32px;position:sticky;top:0;z-index:100}
+.topbar h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar p{font-size:13px;color:var(--muted);margin-top:4px}
+.flow-bar{display:flex;align-items:center;gap:4px;margin-top:12px;flex-wrap:wrap}
+.flow-node{font-size:10px;background:var(--s2);border:1px solid var(--border);padding:3px 8px;border-radius:20px;color:var(--muted);white-space:nowrap}
+.flow-node.done{background:#16213a;border-color:var(--accent);color:var(--accent2)}
+.flow-arrow{color:var(--border);font-size:10px}
+.progress-wrap{margin-top:10px;display:flex;align-items:center;gap:10px}
+.prog-bar{flex:1;height:6px;background:var(--s2);border-radius:3px;overflow:hidden;max-width:300px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--blue));border-radius:3px;transition:.4s}
+.prog-label{font-size:11px;color:var(--muted)}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;max-width:1200px;margin:0 auto;width:100%}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-width:220px;padding:20px 0;position:sticky;top:72px;height:calc(100vh - 72px);overflow-y:auto}
+.phase-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:12px 16px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;border-radius:6px;margin:1px 8px;font-size:12px;color:var(--muted);transition:.2s;text-decoration:none}
+.nav-item:hover{background:var(--s2);color:var(--text)}
+.nav-item.active{background:var(--s2);color:var(--accent2);border-left:2px solid var(--accent)}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;transition:.2s}
+.nav-item.done .nav-dot{background:var(--green)}
+.nav-item.active .nav-dot{background:var(--accent)}
+.nav-num{font-size:10px;width:16px;text-align:right;color:var(--border)}
+
+/* MAIN */
+.main{flex:1;padding:24px 20px;overflow-y:auto}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden;transition:.2s}
+.card:hover{border-color:#3a3a5e}
+.card-header{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;user-select:none}
+.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-meta{flex:1}
+.card-title{font-size:15px;font-weight:700}
+.card-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.card-tags{display:flex;gap:6px;align-items:center;margin-left:auto}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.tag-must{background:#2a1040;color:#c084fc;border:1px solid #7c5cfc}
+.tag-rec{background:#0a2a40;color:#38bdf8;border:1px solid #0284c7}
+.tag-opt{background:#1a2a1a;color:#4ade80;border:1px solid #16a34a}
+.card-toggle{font-size:16px;color:var(--muted);transition:.3s;margin-left:8px}
+.card.open .card-toggle{transform:rotate(180deg)}
+.card-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border)}
+.card.open .card-body{display:block}
+
+/* STEP-FLOW */
+.step-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0;padding:10px 14px;background:var(--s2);border-radius:8px}
+.sf-item{font-size:11px;color:var(--muted)}
+.sf-item.cur{color:var(--accent2);font-weight:600}
+.sf-arr{font-size:10px;color:var(--border)}
+
+/* STEPS */
+.steps{margin:14px 0}
+.step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--s3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:var(--accent2)}
+.step-content{flex:1}
+.step-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.step-detail{font-size:12px;color:var(--muted);line-height:1.7}
+
+/* CODE BLOCK */
+.code-block{position:relative;background:#0a0a14;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0;font-family:'Cascadia Code','Consolas',monospace;font-size:12px;color:#a78bfa;overflow-x:auto}
+.code-block .copy-btn{position:absolute;right:8px;top:8px;background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:10px;color:var(--muted);cursor:pointer;transition:.2s}
+.code-block .copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.code-comment{color:#4a5568}
+
+/* PROMPT EXAMPLE */
+.prompt-box{background:#0a0a14;border:1px solid #1e3a5f;border-radius:8px;padding:12px 16px;margin:8px 0;font-size:12px;color:#7dd3fc;line-height:1.7}
+.prompt-box .label{font-size:10px;color:#38bdf8;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* TIP / WARN */
+.tip{background:#0a1f0a;border-left:3px solid var(--green);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:12px;color:#86efac}
+.tip strong{color:var(--green)}
+.warn{background:#1f1a0a;border-left:3px solid var(--yellow);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:12px;color:#fde047}
+.warn strong{color:var(--yellow)}
+.info{background:#0a1020;border-left:3px solid var(--blue);padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;font-size:12px;color:#7dd3fc}
+.info strong{color:var(--blue)}
+
+/* CHECKLIST */
+.checklist{margin:14px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;margin-bottom:4px;cursor:pointer;transition:.2s;font-size:13px}
+.check-item:hover{background:var(--s2)}
+.check-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.check-item.checked{color:var(--muted);text-decoration:line-through}
+.done-btn{width:100%;padding:10px;margin-top:14px;background:var(--s3);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.done-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.done-btn.completed{background:#0a2a1a;color:var(--green);border-color:var(--green)}
+
+/* MODEL TABLE */
+.model-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
+.model-table th{background:var(--s3);padding:8px 10px;text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.model-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.model-table tr:last-child td{border-bottom:none}
+.rec-model{color:var(--accent2);font-weight:600}
+.cost-badge{background:var(--s3);padding:2px 8px;border-radius:10px;font-size:10px;color:var(--muted)}
+
+/* COST SUMMARY */
+.cost-bar{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-top:16px}
+.cost-icon{font-size:24px}
+.cost-info{flex:1}
+.cost-title{font-size:12px;color:var(--muted)}
+.cost-val{font-size:18px;font-weight:800;color:var(--yellow)}
+
+/* SECTION HEADER */
+.phase-header{display:flex;align-items:center;gap:12px;margin:24px 0 12px;padding:0 4px}
+.phase-num{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.phase-title{font-size:16px;font-weight:800}
+.phase-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* GLOSSARY */
+/* THEME BAR */
+.theme-bar{background:var(--s1);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.theme-bar-label{font-size:11px;color:var(--muted);margin-right:4px;white-space:nowrap}
+.theme-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:12px;cursor:pointer;transition:.2s;font-family:var(--font)}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.theme-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+/* THEME EXAMPLE BOXES */
+.theme-example{transition:opacity .3s}
+.gloss-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.gloss-item{background:var(--s2);border-radius:8px;padding:12px}
+.gloss-term{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:4px}
+.gloss-def{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* THEME PREVIEW CARD */
+.theme-preview{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);margin:12px 32px;overflow:hidden}
+.preview-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.preview-icon{font-size:32px;width:50px;height:50px;border-radius:12px;background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.preview-title{font-size:16px;font-weight:800}
+.preview-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.preview-shots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:14px 20px;border-bottom:1px solid var(--border)}
+.shot-card{background:var(--s2);border-radius:8px;padding:10px 12px;border:1px solid var(--border)}
+.shot-num{font-size:10px;color:var(--accent2);font-weight:700;margin-bottom:4px}
+.shot-tag{font-size:10px;color:var(--muted);float:right}
+.shot-desc{font-size:12px;line-height:1.5;margin-top:4px}
+.preview-meta{display:flex;gap:20px;padding:12px 20px;flex-wrap:wrap}
+.meta-item{font-size:12px;color:var(--muted)}
+.meta-item strong{color:var(--text)}
+.meta-badge{background:var(--s3);border:1px solid var(--border);padding:2px 10px;border-radius:10px;font-size:11px;color:var(--accent2);margin-left:6px}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .layout{flex-direction:column}
+  .gloss-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <h1>🎬 LibTV 廣告MV 完整製作教程</h1>
+  <p>照著每個步驟做，就能完成你的第一支 AI 廣告影片 ✨</p>
+  <div class="flow-bar" id="flowBar">
+    <span class="flow-node" data-step="0">建專案</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="1">素材清單</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="2">寫腳本</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="3">AI生劇本</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="4">確認鏡頭</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="5">上傳素材</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="6">角色一致</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="7">批量分鏡</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="8">轉影片</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="9">配樂</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="10">配音</span><span class="flow-arrow">›</span>
+    <span class="flow-node" data-step="11">匯出</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <span class="prog-label" id="progLabel">0 / 12 完成</span>
+  </div>
+</div>
+
+<!-- THEME BAR -->
+<div class="theme-bar">
+  <span class="theme-bar-label">🎯 廣告主題：</span>
+  <button class="theme-btn active" onclick="setTheme('drink')">🥤 飲料/食品</button>
+  <button class="theme-btn" onclick="setTheme('beauty')">💄 美妝</button>
+  <button class="theme-btn" onclick="setTheme('drama')">🎭 短劇</button>
+  <button class="theme-btn" onclick="setTheme('fashion')">👗 時尚</button>
+  <button class="theme-btn" onclick="setTheme('mv')">🎵 MV</button>
+</div>
+
+<!-- THEME PREVIEW -->
+<div class="theme-preview">
+  <div class="preview-head">
+    <div class="preview-icon" id="prev-icon">🥤</div>
+    <div>
+      <div class="preview-title" id="prev-title">飲料/食品廣告</div>
+      <div class="preview-sub" id="prev-sub">載入中...</div>
+    </div>
+  </div>
+  <div class="preview-shots-grid" id="prev-shots"></div>
+  <div class="preview-meta">
+    <div class="meta-item">圖片模型：<span class="meta-badge" id="prev-img"></span></div>
+    <div class="meta-item">影片模型：<span class="meta-badge" id="prev-vid"></span></div>
+    <div class="meta-item">配樂風格：<span class="meta-badge" id="prev-music"></span></div>
+    <div class="meta-item">預估總算力：<span class="meta-badge" style="color:var(--yellow)" id="prev-cost"></span></div>
+  </div>
+</div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="phase-label">準備</div>
+  <a class="nav-item" onclick="scrollTo('c0')" href="#"><span class="nav-num">1</span><span class="nav-dot"></span> 建立專案</a>
+  <a class="nav-item" onclick="scrollTo('c1')" href="#"><span class="nav-num">2</span><span class="nav-dot"></span> 素材清單</a>
+  <div class="phase-label">撰寫腳本</div>
+  <a class="nav-item" onclick="scrollTo('c2')" href="#"><span class="nav-num">3</span><span class="nav-dot"></span> 建腳本節點</a>
+  <a class="nav-item" onclick="scrollTo('c3')" href="#"><span class="nav-num">4</span><span class="nav-dot"></span> AI生成劇本</a>
+  <a class="nav-item" onclick="scrollTo('c4')" href="#"><span class="nav-num">5</span><span class="nav-dot"></span> 全螢幕確認</a>
+  <div class="phase-label">視覺製作</div>
+  <a class="nav-item" onclick="scrollTo('c5')" href="#"><span class="nav-num">6</span><span class="nav-dot"></span> 上傳品牌素材</a>
+  <a class="nav-item" onclick="scrollTo('c6')" href="#"><span class="nav-num">7</span><span class="nav-dot"></span> 角色一致性</a>
+  <a class="nav-item" onclick="scrollTo('c7')" href="#"><span class="nav-num">8</span><span class="nav-dot"></span> 批量分鏡圖</a>
+  <div class="phase-label">影片生成</div>
+  <a class="nav-item" onclick="scrollTo('c8')" href="#"><span class="nav-num">9</span><span class="nav-dot"></span> 分鏡轉影片</a>
+  <div class="phase-label">聲音製作</div>
+  <a class="nav-item" onclick="scrollTo('c9')" href="#"><span class="nav-num">10</span><span class="nav-dot"></span> 廣告配樂</a>
+  <a class="nav-item" onclick="scrollTo('c10')" href="#"><span class="nav-num">11</span><span class="nav-dot"></span> AI配音旁白</a>
+  <div class="phase-label">完成輸出</div>
+  <a class="nav-item" onclick="scrollTo('c11')" href="#"><span class="nav-num">12</span><span class="nav-dot"></span> 匯出下載</a>
+  <div style="margin:16px;padding:12px;background:var(--s2);border-radius:8px">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:6px">⚡ 預估總算力</div>
+    <div style="font-size:16px;font-weight:800;color:var(--yellow)">~350–500 積分</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:2px">5鏡頭 × 圖+影片+音</div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- 詞彙表 -->
+<div class="phase-header">
+  <div class="phase-num">📖</div>
+  <div><div class="phase-title">先看懂這些名詞</div><div class="phase-sub">不懂沒關係，看一眼就夠了</div></div>
+</div>
+<div class="gloss-grid">
+  <div class="gloss-item"><div class="gloss-term">節點（Node）</div><div class="gloss-def">畫布上的一個工作方塊，每個方塊做一件事：生圖、生影片、生音樂</div></div>
+  <div class="gloss-item"><div class="gloss-term">腳本節點</div><div class="gloss-def">用來寫廣告故事、拆分鏡頭的特殊節點，是整個製作的核心</div></div>
+  <div class="gloss-item"><div class="gloss-term">分鏡</div><div class="gloss-def">把廣告拆成一格一格的圖片，每格代表影片中的一個場景</div></div>
+  <div class="gloss-item"><div class="gloss-term">Prompt</div><div class="gloss-def">告訴 AI 要畫什麼的文字描述，通常用英文，越詳細越好</div></div>
+  <div class="gloss-item"><div class="gloss-term">參考圖（Reference）</div><div class="gloss-def">給 AI 看的範本圖片，讓 AI 照著這個風格或人物生成</div></div>
+  <div class="gloss-item"><div class="gloss-term">節點ID</div><div class="gloss-def">每個節點的專屬編號，像身分證，指令裡用 -n 帶入</div></div>
+  <div class="gloss-item"><div class="gloss-term">算力（積分）</div><div class="gloss-def">每次讓 AI 生成內容都要花算力，就像用電費一樣</div></div>
+  <div class="gloss-item"><div class="gloss-term">批量生成</div><div class="gloss-def">一次讓所有鏡頭的 AI 同時開始生成，省時間</div></div>
+</div>
+
+<!-- PHASE 1: 準備 -->
+<div class="phase-header">
+  <div class="phase-num">1</div>
+  <div><div class="phase-title">準備階段</div><div class="phase-sub">建立你的工作空間</div></div>
+</div>
+
+<!-- CARD 0: 建立專案 -->
+<div class="card" id="c0">
+  <div class="card-header" onclick="toggleCard('c0')">
+    <div class="card-icon" style="background:#1a1040">🗂️</div>
+    <div class="card-meta">
+      <div class="card-title">Step 1：建立專案</div>
+      <div class="card-desc">在 LibTV 建一個專屬的廣告工作資料夾</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 2分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="step-flow">
+      <span class="sf-item cur">建立專案</span><span class="sf-arr">›</span>
+      <span class="sf-item">設定為當前專案</span><span class="sf-arr">›</span>
+      <span class="sf-item">記下 UUID</span>
+    </div>
+    <div class="info"><strong>💡 什麼是專案？</strong> 就像電腦裡的一個資料夾，把這次廣告用到的所有東西（圖片、影片、音樂）都放在裡面，方便管理。</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">在終端機輸入這個指令，建立新專案</div>
+          <div class="step-detail">把「廣告名稱」換成你的廣告名字，例如：FLOW-運動飲料-廣告MV</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe project create "廣告名稱"
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">執行後會看到這樣的回覆，複製那串 UUID</div>
+          <div class="step-detail">UUID 長這樣：<code style="color:var(--accent2);font-family:monospace">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code></div>
+          <div class="code-block"><span class="code-comment"># 回覆範例</span>
+Project created: FLOW-運動飲料-廣告MV
+UUID: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">把這個專案設定為「當前工作專案」</div>
+          <div class="step-detail">把 &lt;你的UUID&gt; 換成剛才複製的那串數字</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe project use &lt;你的UUID&gt;
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ 完成標誌：</strong>終端機顯示 "Now using project: ..." 就成功了！</div>
+    <div class="checklist" id="chk0">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c0',this)"> 已建立專案並記下名稱</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c0',this)"> 已複製 UUID</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c0',this)"> 已執行 project use，設定為當前專案</label>
+    </div>
+    <button class="done-btn" id="btn-c0" onclick="markDone('c0',0)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- CARD 1: 素材清單 -->
+<div class="card" id="c1">
+  <div class="card-header" onclick="toggleCard('c1')">
+    <div class="card-icon" style="background:#1a1a0a">📋</div>
+    <div class="card-meta">
+      <div class="card-title">Step 2：準備素材清單</div>
+      <div class="card-desc">開始做之前，先把你需要的東西準備好</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 5分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="info"><strong>💡 為什麼要先準備？</strong> 就像做菜前要先備料一樣，把素材準備好，製作過程才不會卡住。</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">📌</div>
+        <div class="step-content">
+          <div class="step-title">必須要有的東西（找不到就先用佔位圖）</div>
+          <div class="step-detail">
+            <div style="margin-top:8px;display:grid;gap:6px">
+              <div style="background:var(--s2);border-radius:6px;padding:10px 12px;border-left:3px solid var(--red)">
+                🔴 <strong>品牌 Logo</strong> — PNG 格式，背景透明更好（例：FLOW飲料的Logo）
+              </div>
+              <div style="background:var(--s2);border-radius:6px;padding:10px 12px;border-left:3px solid var(--red)">
+                🔴 <strong>主角照片</strong> — 1-3 張清楚的臉部或全身照，用來讓 AI 保持角色一致
+              </div>
+              <div style="background:var(--s2);border-radius:6px;padding:10px 12px;border-left:3px solid var(--yellow)">
+                🟡 <strong>產品圖片</strong> — 你的廣告主角產品（飲料瓶、包裝等），越清楚越好
+              </div>
+              <div style="background:var(--s2);border-radius:6px;padding:10px 12px;border-left:3px solid var(--green)">
+                🟢 <strong>風格參考圖</strong> — 選擇性，找幾張你喜歡的廣告截圖給 AI 參考
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">📝</div>
+        <div class="step-content">
+          <div class="step-title">決定廣告的基本設定</div>
+          <div class="step-detail">在繼續之前，先想好這幾件事：
+            <div style="margin-top:8px;background:var(--s2);border-radius:8px;padding:12px">
+              <div style="margin-bottom:8px">🎯 <strong>廣告主題</strong>：這支廣告要傳達什麼？（例：FLOW運動飲料讓你突破極限）</div>
+              <div style="margin-bottom:8px">⏱️ <strong>廣告長度</strong>：幾秒？（建議新手做 15-30 秒，約 5-8 個鏡頭）</div>
+              <div style="margin-bottom:8px">🎨 <strong>廣告風格</strong>：活力動感？優雅高端？溫馨生活感？</div>
+              <div>🗣️ <strong>廣告語</strong>：最後要顯示什麼口號？（例：「突破極限，FLOW與你同行」）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="warn"><strong>⚠️ 小提醒：</strong>主角照片至少要有 1 張，否則 AI 每次生成的人臉都會不一樣，廣告看起來會很奇怪！</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c1',this)"> 品牌 Logo 已準備好（PNG格式）</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c1',this)"> 主角照片已準備好（至少1張清楚的臉）</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c1',this)"> 廣告主題、風格、廣告語已想好</label>
+    </div>
+    <button class="done-btn" id="btn-c1" onclick="markDone('c1',1)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- PHASE 2: 腳本 -->
+<div class="phase-header">
+  <div class="phase-num">2</div>
+  <div><div class="phase-title">撰寫腳本</div><div class="phase-sub">讓 AI 幫你把廣告故事變成一格一格的鏡頭</div></div>
+</div>
+
+<!-- CARD 2: 建腳本節點 -->
+<div class="card" id="c2">
+  <div class="card-header" onclick="toggleCard('c2')">
+    <div class="card-icon" style="background:#0a1a2a">📝</div>
+    <div class="card-meta">
+      <div class="card-title">Step 3：建立腳本節點</div>
+      <div class="card-desc">這是整個製作最重要的節點，用來寫劇本和拆分鏡頭</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 1分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="step-flow">
+      <span class="sf-item cur">建節點</span><span class="sf-arr">›</span>
+      <span class="sf-item">記下節點ID</span><span class="sf-arr">›</span>
+      <span class="sf-item">→ 下一步輸入劇本</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">建立腳本節點</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe node create -t script
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">系統回覆節點 ID，把它記下來！</div>
+          <div class="code-block"><span class="code-comment"># 回覆範例</span>
+Node created (script): script_abc12345
+NodeKey: script_abc12345
+          </div>
+          <div class="step-detail" style="margin-top:6px">⬆️ <code style="color:var(--accent2)">script_abc12345</code> 就是你的腳本節點 ID，後面所有指令都要用到它</div>
+        </div>
+      </div>
+    </div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c2',this)"> 已建立腳本節點</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c2',this)"> 已記下腳本節點 ID（NodeKey）</label>
+    </div>
+    <button class="done-btn" id="btn-c2" onclick="markDone('c2',2)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- CARD 3: AI生劇本 -->
+<div class="card" id="c3">
+  <div class="card-header" onclick="toggleCard('c3')">
+    <div class="card-icon" style="background:#1a0a2a">🤖</div>
+    <div class="card-meta">
+      <div class="card-title">Step 4：讓 AI 生成廣告劇本</div>
+      <div class="card-desc">輸入你的廣告想法，AI 自動幫你拆成多個鏡頭</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 3分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="info"><strong>💡 腳本節點 V2 最強功能</strong>：你只需要說「我的廣告是關於…」，AI 會自動把它拆成 5-8 個鏡頭，每個鏡頭有場景、角色動作、攝影機角度。</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">在腳本節點的「劇本描述」欄位輸入你的廣告想法</div>
+          <div class="step-detail">打開 LibTV 網頁，找到你的腳本節點，點擊「生成腳本」，在對話框輸入：</div>
+          <div class="prompt-box theme-example" id="ex-script">
+            <div class="label">📋 範例輸入（可複製修改）</div>
+            <span id="ex-script-text">這是一支運動飲料「FLOW」的廣告。主角是一位20歲左右的年輕女運動員。<br>
+            廣告要表現：清晨城市跑步 → 運動後拿出FLOW飲料喝 → 展現活力與能量 → 結尾出現品牌標語「突破極限，FLOW與你同行」。<br>
+            風格：現代、活力、電影感。時長：約20秒，5個鏡頭。</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">AI 生成的腳本大概長這樣（5個鏡頭範例）</div>
+          <div style="background:var(--s2);border-radius:8px;padding:12px;margin-top:8px;font-size:12px">
+            <div style="margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px">
+              <span style="color:var(--accent2);font-weight:700">鏡頭1</span> <span style="color:var(--muted)">｜4秒｜廣角</span><br>
+              <strong>場景：</strong>城市清晨，天空還帶著橙紅色。<br>
+              <strong>動作：</strong>女主角在空曠街道上奔跑，汗水飛濺，動作充滿力量。
+            </div>
+            <div style="margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px">
+              <span style="color:var(--accent2);font-weight:700">鏡頭2</span> <span style="color:var(--muted)">｜3秒｜特寫</span><br>
+              <strong>場景：</strong>運動後休息，臉部特寫，氣喘吁吁但充滿鬥志。<br>
+              <strong>動作：</strong>汗珠從臉頰滑落，手伸向地上的FLOW飲料瓶。
+            </div>
+            <div style="margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px">
+              <span style="color:var(--accent2);font-weight:700">鏡頭3</span> <span style="color:var(--muted)">｜4秒｜慢動作</span><br>
+              <strong>場景：</strong>戶外陽光下。<br>
+              <strong>動作：</strong>打開FLOW飲料瓶，冰涼飲料流出，水滴飛濺，慢動作特效。
+            </div>
+            <div style="margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px">
+              <span style="color:var(--accent2);font-weight:700">鏡頭4</span> <span style="color:var(--muted)">｜5秒｜中景</span><br>
+              <strong>場景：</strong>城市背景。<br>
+              <strong>動作：</strong>女主角喝完飲料，精神煥發，展開雙臂擁抱清晨，眼神充滿活力。
+            </div>
+            <div>
+              <span style="color:var(--accent2);font-weight:700">鏡頭5</span> <span style="color:var(--muted)">｜4秒｜品牌收尾</span><br>
+              <strong>場景：</strong>乾淨白底。<br>
+              <strong>動作：</strong>FLOW飲料瓶置中，品牌標語文字出現「突破極限，FLOW與你同行」。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ 小技巧：</strong>鏡頭數量建議 5-8 個。太少廣告太單調，太多算力花很多。新手從 5 個開始！</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c3',this)"> 已輸入廣告想法</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c3',this)"> AI 成功生成腳本（有分鏡頭）</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c3',this)"> 鏡頭數量 5-8 個（合理範圍）</label>
+    </div>
+    <button class="done-btn" id="btn-c3" onclick="markDone('c3',3)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- CARD 4: 全螢幕確認 -->
+<div class="card" id="c4">
+  <div class="card-header" onclick="toggleCard('c4')">
+    <div class="card-icon" style="background:#0a200a">🖥️</div>
+    <div class="card-meta">
+      <div class="card-title">Step 5：全螢幕視圖確認 ＆ 修改鏡頭</div>
+      <div class="card-desc">進入全螢幕，仔細確認每個鏡頭的內容，不對的直接改</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 5分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="step-flow">
+      <span class="sf-item">點全螢幕按鈕</span><span class="sf-arr">›</span>
+      <span class="sf-item cur">看完整腳本表</span><span class="sf-arr">›</span>
+      <span class="sf-item">雙擊修改</span><span class="sf-arr">›</span>
+      <span class="sf-item">離開全螢幕</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">打開全螢幕視圖</div>
+          <div class="step-detail">在腳本節點的右上角，找到這個按鈕點下去：</div>
+          <div style="background:var(--s2);border-radius:8px;padding:12px;margin-top:6px;text-align:center">
+            <div style="font-size:28px;margin-bottom:6px">⛶</div>
+            <div style="font-size:12px;color:var(--muted)">「全螢幕」或「展開」按鈕，在節點右上角</div>
+          </div>
+          <div class="step-detail" style="margin-top:8px">進入全螢幕後，你會看到一個完整的表格，每一行代表一個鏡頭。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">全螢幕視圖裡可以做什麼</div>
+          <div style="display:grid;gap:8px;margin-top:8px">
+            <div style="background:var(--s2);border-radius:6px;padding:10px 12px">
+              ✏️ <strong>雙擊任何欄位</strong>→ 直接修改那格的文字（場景描述、角色動作、鏡頭時長）
+            </div>
+            <div style="background:var(--s2);border-radius:6px;padding:10px 12px">
+              🖼️ <strong>點「替換參考圖」</strong>→ 上傳你的主角照片給這個鏡頭
+            </div>
+            <div style="background:var(--s2);border-radius:6px;padding:10px 12px">
+              ➕ <strong>點「新增鏡頭」</strong>→ 在最後面加一個新鏡頭
+            </div>
+            <div style="background:var(--s2);border-radius:6px;padding:10px 12px">
+              🗑️ <strong>點每行右邊的 ✕</strong>→ 刪除不要的鏡頭
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">必須確認的事項清單</div>
+          <div style="background:var(--s2);border-radius:8px;padding:12px;margin-top:6px;font-size:12px;line-height:2">
+            ☑️ 每個鏡頭的場景描述是否正確？<br>
+            ☑️ 廣告語（品牌標語）有沒有寫在最後一個鏡頭？<br>
+            ☑️ 鏡頭時長加起來是你想要的秒數嗎？<br>
+            ☑️ 有沒有鏡頭的描述太模糊？（越具體 AI 生的越準）
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">修改完畢後，點「重新合成提示詞」</div>
+          <div class="step-detail">⚠️ 這一步很重要！改了腳本之後，一定要重新合成提示詞，AI 才會根據新內容生圖。不然它還是照舊版本做。</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ 小技巧：</strong>如果你的廣告有固定角色，記得在每個有人物的鏡頭上傳「參考圖（主角照片）」，這樣每個鏡頭的人物臉都會一致！</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c4',this)"> 已進入全螢幕視圖</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c4',this)"> 已確認並修改每個鏡頭的內容</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c4',this)"> 已重新合成提示詞</label>
+    </div>
+    <button class="done-btn" id="btn-c4" onclick="markDone('c4',4)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div class="phase-header">
+  <div class="phase-num">3</div>
+  <div><div class="phase-title">視覺製作</div><div class="phase-sub">上傳素材、保持角色一致、批量生成分鏡圖</div></div>
+</div>
+
+<!-- CARD 5: 上傳素材 -->
+<div class="card" id="c5">
+  <div class="card-header" onclick="toggleCard('c5')">
+    <div class="card-icon" style="background:#1a0a0a">📁</div>
+    <div class="card-meta">
+      <div class="card-title">Step 6：上傳品牌素材</div>
+      <div class="card-desc">把 Logo、產品圖、主角照片上傳到 LibTV 系統</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 3分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">上傳主角照片</div>
+          <div class="step-detail">把 C:\你的路徑\主角照片.jpg 換成你的圖片路徑</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe upload "C:\你的路徑\主角照片.jpg"
+          </div>
+          <div class="step-detail" style="margin-top:6px">成功後會顯示 NodeKey，記下來！（例：<code style="color:var(--accent2)">image_xxxxx</code>）</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">上傳品牌 Logo</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe upload "C:\你的路徑\logo.png"
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">上傳產品圖（如果有的話）</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe upload "C:\你的路徑\產品圖.jpg"
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">查看你上傳的所有節點</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe node list
+          </div>
+          <div class="step-detail" style="margin-top:6px">把所有上傳的 NodeKey 記在一張紙或便利貼上，後面要用很多次！</div>
+        </div>
+      </div>
+    </div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c5',this)"> 主角照片已上傳，NodeKey 已記下</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c5',this)"> 品牌 Logo 已上傳，NodeKey 已記下</label>
+    </div>
+    <button class="done-btn" id="btn-c5" onclick="markDone('c5',5)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- CARD 6: 角色一致 -->
+<div class="card" id="c6">
+  <div class="card-header" onclick="toggleCard('c6')">
+    <div class="card-icon" style="background:#0a1a0a">👤</div>
+    <div class="card-meta">
+      <div class="card-title">Step 7：角色一致性（三視圖）</div>
+      <div class="card-desc">生成主角的正面、側面、背面圖，讓每個鏡頭的人物都一樣</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-rec">推薦</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 5分鐘 ｜ ~30積分</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="info"><strong>💡 為什麼要做三視圖？</strong> 如果你的廣告裡有固定角色（主角），AI 每次生成時臉都會不一樣。做了三視圖後，後面每個鏡頭都可以引用同一個角色的外觀，保持一致！</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">先建立一個圖片節點，讓主角照片生成三視圖</div>
+          <div class="step-detail">把 &lt;主角照片NodeKey&gt; 換成你在 Step 6 上傳主角照片的 NodeKey</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe node create -t image -u &lt;主角照片NodeKey&gt;
+          </div>
+          <div class="step-detail" style="margin-top:6px">記下新建立的圖片節點 ID（例：<code style="color:var(--accent2)">image_role123</code>）</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">使用「角色三視圖」快捷指令</div>
+          <div class="step-detail">把 &lt;剛建立的圖片節點ID&gt; 換成上一步的節點 ID</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe image shortcut "角色三视图" -n &lt;剛建立的圖片節點ID&gt;
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">等待生成完成（約 2-5 分鐘），結果是 3 張圖</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <div style="flex:1;background:var(--s2);border-radius:8px;padding:12px;text-align:center;font-size:12px">
+              <div style="font-size:24px;margin-bottom:4px">👤</div>正面
+            </div>
+            <div style="flex:1;background:var(--s2);border-radius:8px;padding:12px;text-align:center;font-size:12px">
+              <div style="font-size:24px;margin-bottom:4px">👤</div>側面
+            </div>
+            <div style="flex:1;background:var(--s2);border-radius:8px;padding:12px;text-align:center;font-size:12px">
+              <div style="font-size:24px;margin-bottom:4px">👤</div>背面
+            </div>
+          </div>
+          <div class="step-detail" style="margin-top:8px">這 3 張圖的節點 ID 要記下來，後面生成每個鏡頭時都要引用它們。</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ 完成後：</strong>你有了「官方角色設定圖」，後面每個鏡頭加上這個參考，角色就不會跑版！</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c6',this)"> 已建立圖片節點（引用主角照片）</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c6',this)"> 三視圖生成成功（3張圖）</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c6',this)"> 三視圖節點 ID 已記下</label>
+    </div>
+    <button class="done-btn" id="btn-c6" onclick="markDone('c6',6)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- CARD 7: 批量分鏡圖 -->
+<div class="card" id="c7">
+  <div class="card-header" onclick="toggleCard('c7')">
+    <div class="card-icon" style="background:#1a0a1a">🎨</div>
+    <div class="card-meta">
+      <div class="card-title">Step 8：批量生成分鏡圖</div>
+      <div class="card-desc">一次讓所有鏡頭都生成圖片，每張圖代表廣告的一個場景</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 10-20分鐘 ｜ ~80積分</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="step-flow">
+      <span class="sf-item">腳本節點</span><span class="sf-arr">›</span>
+      <span class="sf-item cur">腳本→分鏡</span><span class="sf-arr">›</span>
+      <span class="sf-item">選模型</span><span class="sf-arr">›</span>
+      <span class="sf-item">批量生成</span><span class="sf-arr">›</span>
+      <span class="sf-item">確認品質</span>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">使用「腳本→分鏡」指令，一鍵從腳本生成所有分鏡圖</div>
+          <div class="step-detail">把 &lt;腳本節點ID&gt; 換成 Step 3 的節點 ID</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe script storyboard -n &lt;腳本節點ID&gt;
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">選擇圖片生成模型</div>
+          <table class="model-table">
+            <tr><th>模型</th><th>適合場景</th><th>算力/張</th></tr>
+            <tr><td class="rec-model">★ Seedream 5.0</td><td>廣告、寫實、高品質（推薦）</td><td><span class="cost-badge">~12積分</span></td></tr>
+            <tr><td>Seedream 4.6</td><td>人像寫真、風格化</td><td><span class="cost-badge">~10積分</span></td></tr>
+            <tr><td>全能圖片 V2</td><td>通用，省算力</td><td><span class="cost-badge">~8積分</span></td></tr>
+          </table>
+          <div class="step-detail">🔰 新手建議：先用「全能圖片 V2」測試，確認效果滿意再換 Seedream 5.0 重生。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">執行批量生成（在 LibTV 網頁介面操作）</div>
+          <div style="display:grid;gap:6px;margin-top:8px">
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">① 在腳本節點找到「批量生成分鏡圖」按鈕</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">② 選擇模型（Seedream 5.0 或全能圖片 V2）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">③ 確認算力消耗（5張 × 12積分 = 60積分）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">④ 點「開始生成」，然後等待（約 10-20 分鐘）</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">生成後檢查每張分鏡圖</div>
+          <div style="background:var(--s2);border-radius:8px;padding:12px;font-size:12px;line-height:2;margin-top:6px">
+            ☑️ 人物臉部是否清楚？<br>
+            ☑️ 場景是否符合腳本描述？<br>
+            ☑️ 品牌產品有出現在正確的鏡頭嗎？<br>
+            ☑️ 如果有不滿意的，可以對那個鏡頭點「重新生成」
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="warn"><strong>⚠️ 注意：</strong>批量生成時，如果有鏡頭失敗，不要整批重做！只對失敗的那個鏡頭點「重新生成」，省算力。</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c7',this)"> 已執行腳本→分鏡指令</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c7',this)"> 已選擇圖片模型並確認算力</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c7',this)"> 所有分鏡圖生成完成（品質確認OK）</label>
+    </div>
+    <button class="done-btn" id="btn-c7" onclick="markDone('c7',7)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- PHASE 4 -->
+<div class="phase-header">
+  <div class="phase-num">4</div>
+  <div><div class="phase-title">影片生成</div><div class="phase-sub">把靜態分鏡圖變成會動的影片</div></div>
+</div>
+
+<!-- CARD 8: 分鏡轉影片 -->
+<div class="card" id="c8">
+  <div class="card-header" onclick="toggleCard('c8')">
+    <div class="card-icon" style="background:#1a1a0a">🎥</div>
+    <div class="card-meta">
+      <div class="card-title">Step 9：分鏡圖轉換成影片</div>
+      <div class="card-desc">AI 讓每張圖片動起來，變成廣告影片的每個鏡頭</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 20-40分鐘 ｜ ~150積分</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="info"><strong>💡 這步最消耗算力</strong>：影片生成比圖片貴很多，5 個鏡頭約 150-200 積分。建議先試做 1-2 個鏡頭確認效果再全部做。</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">方法A</div>
+        <div class="step-content">
+          <div class="step-title">在腳本節點直接使用「批量生成視頻」（最簡單）</div>
+          <div style="display:grid;gap:6px;margin-top:8px">
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">① 在腳本節點找到「批量生成視頻」按鈕（在分鏡圖上方）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">② 選擇影片模型（見下表）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">③ 設定每個鏡頭的時長（秒）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">④ 確認總算力 → 點「開始生成」</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">方法B</div>
+        <div class="step-content">
+          <div class="step-title">手動連線圖片節點到視頻節點（更多控制）</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            <span class="code-comment"># 建立影片節點，引用分鏡圖</span>
+C:\Users\User\.libtv\libtv.exe node create -t video -u &lt;分鏡圖NodeKey&gt;
+          </div>
+          <div class="step-detail" style="margin-top:6px">對每個鏡頭重複這個步驟，建立對應的影片節點。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">📊</div>
+        <div class="step-content">
+          <div class="step-title">選擇影片生成模型</div>
+          <table class="model-table">
+            <tr><th>模型</th><th>適合廣告場景</th><th>算力/秒</th></tr>
+            <tr><td class="rec-model">★ Seedance 2.0</td><td>1080P高畫質、真人動作、廣告首選</td><td><span class="cost-badge">~0.35元/秒</span></td></tr>
+            <tr><td>可灵 3.0</td><td>流暢動作、電影感強</td><td><span class="cost-badge">依秒計算</span></td></tr>
+            <tr><td>HappyHorse 1.0</td><td>多角色同框（最多9人）、3-15秒</td><td><span class="cost-badge">依秒計算</span></td></tr>
+            <tr><td>Wan 2.6</td><td>省算力，CP值高</td><td><span class="cost-badge">較低</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">設定每個鏡頭的影片參數</div>
+          <div style="background:var(--s2);border-radius:8px;padding:12px;font-size:12px;line-height:2;margin-top:6px">
+            ⏱️ <strong>時長</strong>：建議每個鏡頭 3-5 秒<br>
+            📐 <strong>比例</strong>：廣告通常用 16:9（橫向）或 9:16（手機版）<br>
+            🎬 <strong>動作描述</strong>：告訴 AI 這個鏡頭要怎麼動（例：「緩慢推近」「快速搖晃」「慢動作」）
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ 新手建議：</strong>先做鏡頭1試試看。滿意品質再做全部，這樣如果效果不好可以換模型，不會浪費太多算力。</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c8',this)"> 已測試 1 個鏡頭確認效果</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c8',this)"> 已選擇影片模型</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c8',this)"> 所有鏡頭影片生成完成</label>
+    </div>
+    <button class="done-btn" id="btn-c8" onclick="markDone('c8',8)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- PHASE 5 -->
+<div class="phase-header">
+  <div class="phase-num">5</div>
+  <div><div class="phase-title">聲音製作</div><div class="phase-sub">加上配樂和旁白，讓廣告更有力量</div></div>
+</div>
+
+<!-- CARD 9: 配樂 -->
+<div class="card" id="c9">
+  <div class="card-header" onclick="toggleCard('c9')">
+    <div class="card-icon" style="background:#0a0a1a">🎵</div>
+    <div class="card-meta">
+      <div class="card-title">Step 10：生成廣告配樂</div>
+      <div class="card-desc">讓 AI 幫你的廣告創作一首專屬背景音樂</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-rec">推薦</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 5分鐘 ｜ ~20積分</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">建立音訊節點</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe node create -t audio
+          </div>
+          <div class="step-detail" style="margin-top:6px">記下音訊節點 ID</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">查詢最新音樂模型</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe model search audio
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">在 LibTV 網頁介面描述你要的音樂</div>
+          <div class="prompt-box theme-example">
+            <div class="label">🎵 音樂 Prompt 範例</div>
+            <span id="ex-music-text">Upbeat electronic music, energetic and motivational, suitable for a sports drink advertisement. Tempo: fast (130 BPM). Duration: 20 seconds. Include a strong beat drop at 10 seconds.<br><br><span style="color:var(--muted)">（活力電子音樂，快節奏130 BPM，20秒，第10秒高潮轉折）</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">不同廣告風格的音樂方向</div>
+          <div style="display:grid;gap:6px;margin-top:8px">
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">🏃 <strong>運動/活力</strong>：Electronic, upbeat, high energy, 120-140 BPM</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">💄 <strong>美妝/時尚</strong>：Elegant, ambient pop, soft beats, 90-110 BPM</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">🍽️ <strong>美食/溫馨</strong>：Acoustic guitar, warm, feel-good, 80-100 BPM</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">💻 <strong>科技/產品</strong>：Minimalist, futuristic synth, clean, 100-120 BPM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c9',this)"> 已建立音訊節點</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c9',this)"> 配樂生成完成，音樂風格符合廣告</label>
+    </div>
+    <button class="done-btn" id="btn-c9" onclick="markDone('c9',9)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- CARD 10: 配音 -->
+<div class="card" id="c10">
+  <div class="card-header" onclick="toggleCard('c10')">
+    <div class="card-icon" style="background:#0a1a1a">🎤</div>
+    <div class="card-meta">
+      <div class="card-title">Step 11：AI 配音旁白</div>
+      <div class="card-desc">讓 AI 說出廣告旁白或品牌標語</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-rec">推薦</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 3分鐘 ｜ ~15積分</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">建立語音節點</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+            C:\Users\User\.libtv\libtv.exe node create -t audio
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">選擇語音模型</div>
+          <table class="model-table">
+            <tr><th>模型</th><th>特色</th></tr>
+            <tr><td class="rec-model">★ Minimax Speech 2.8 HD</td><td>300+ 音色、情緒豐富、最自然（推薦）</td></tr>
+            <tr><td>Minimax Speech 2.8 Turbo</td><td>生成速度快，適合大量配音</td></tr>
+            <tr><td>音色克隆</td><td>用自己的聲音或指定聲優，一次建立可重複使用</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">輸入要配音的文字</div>
+          <div class="prompt-box theme-example">
+            <div class="label">🎤 旁白範例</div>
+            <span id="ex-voice-text">每一次突破，都是新的起點。<br>FLOW 運動飲料，補充你的能量，超越你的極限。<br>突破極限，FLOW 與你同行。</span>
+          </div>
+          <div class="step-detail" style="margin-top:8px">選擇音色時，男女聲都可試。廣告旁白通常用「成熟有力」的音色效果最好。</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>✅ 小技巧：</strong>廣告旁白的文字不要太長，說話語速留出停頓，配上背景音樂效果最佳！</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c10',this)"> 旁白文字已確定</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c10',this)"> 配音生成完成，聲音自然</label>
+    </div>
+    <button class="done-btn" id="btn-c10" onclick="markDone('c10',10)">✓ 這步完成了</button>
+  </div>
+</div>
+
+<!-- PHASE 6 -->
+<div class="phase-header">
+  <div class="phase-num">6</div>
+  <div><div class="phase-title">完成輸出</div><div class="phase-sub">把所有素材合在一起，下載你的廣告影片</div></div>
+</div>
+
+<!-- CARD 11: 匯出 -->
+<div class="card" id="c11">
+  <div class="card-header" onclick="toggleCard('c11')">
+    <div class="card-icon" style="background:#1a0a0a">🚀</div>
+    <div class="card-meta">
+      <div class="card-title">Step 12：後製整合 ＆ 匯出下載</div>
+      <div class="card-desc">在 LibTV 畫布上組合影片、音樂、旁白，最後下載成品</div>
+    </div>
+    <div class="card-tags">
+      <span class="tag tag-must">必要</span>
+      <span style="font-size:11px;color:var(--muted)">⏱ 10分鐘</span>
+    </div>
+    <span class="card-toggle">▼</span>
+  </div>
+  <div class="card-body">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">在 LibTV 畫布上確認節點連線</div>
+          <div style="background:var(--s2);border-radius:8px;padding:12px;font-size:12px;margin-top:8px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="background:var(--accent);padding:2px 8px;border-radius:4px;font-size:11px">腳本節點</span>
+              <span style="color:var(--muted)">→</span>
+              <span style="background:#0a2a10;border:1px solid var(--green);padding:2px 8px;border-radius:4px;font-size:11px;color:var(--green)">5個影片節點</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="background:#0a1a2a;border:1px solid var(--blue);padding:2px 8px;border-radius:4px;font-size:11px;color:var(--blue)">配樂音訊節點</span>
+              <span style="color:var(--muted)">→</span>
+              <span style="color:var(--muted);font-size:11px">與影片合軌</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="background:#1a0a2a;border:1px solid var(--accent2);padding:2px 8px;border-radius:4px;font-size:11px;color:var(--accent2)">旁白音訊節點</span>
+              <span style="color:var(--muted)">→</span>
+              <span style="color:var(--muted);font-size:11px">疊加到影片上</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">在 LibTV 的時間軸上排列鏡頭順序</div>
+          <div style="display:grid;gap:6px;margin-top:8px">
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">① 點開「時間軸視圖」</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">② 拖拉每個影片鏡頭到正確的時間位置</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">③ 把配樂拉到時間軸底層（整個廣告長度）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">④ 把旁白放在需要的時間點（通常是最後幾秒）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">⑤ 預覽播放，確認效果</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">匯出最終廣告影片</div>
+          <div style="display:grid;gap:6px;margin-top:8px">
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">① 點右上角「匯出」或「Export」按鈕</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">② 選擇畫質：1080P（一般廣告）或 4K（高端）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">③ 格式選 MP4（通用性最高）</div>
+            <div style="background:var(--s2);border-radius:6px;padding:8px 12px;font-size:12px">④ 等待渲染完成，點下載</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cost-bar">
+      <span class="cost-icon">⚡</span>
+      <div class="cost-info">
+        <div class="cost-title">5鏡頭廣告MV 總算力估算</div>
+        <div class="cost-val">~350–500 積分</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);text-align:right">
+        分鏡圖 ~60<br>影片生成 ~175<br>音樂+配音 ~35<br>重生+雜費 ~80
+      </div>
+    </div>
+    <div class="tip"><strong>🎉 恭喜完成！</strong>你做出了你的第一支 AI 廣告 MV！下載後可以分享到社群媒體。</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c11',this)"> 時間軸排列完成</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c11',this)"> 配樂和旁白已整合</label>
+      <label class="check-item"><input type="checkbox" onchange="updateCheck('c11',this)"> 影片已匯出下載</label>
+    </div>
+    <button class="done-btn" id="btn-c11" onclick="markDone('c11',11)">✓ 完成！廣告MV製作完畢 🎬</button>
+  </div>
+</div>
+
+<!-- BONUS: 快速指令表 -->
+<div class="phase-header" style="margin-top:32px">
+  <div class="phase-num">📌</div>
+  <div><div class="phase-title">快速指令總覽</div><div class="phase-sub">把這頁截圖存起來，隨時查看</div></div>
+</div>
+<div style="background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:32px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+    <div>
+      <div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:8px">專案管理</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe project create "名稱"</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe project use &lt;UUID&gt;</div>
+    </div>
+    <div>
+      <div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:8px">節點操作</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe node create -t script</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe node create -t image</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe node create -t video</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe node create -t audio</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe node list</div>
+    </div>
+    <div>
+      <div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:8px">素材 ＆ 生成</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe upload "路徑\檔案.jpg"</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe script storyboard -n &lt;ID&gt;</div>
+    </div>
+    <div>
+      <div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:8px">特殊功能</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe image shortcut "角色三视图" -n &lt;ID&gt;</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe image shortcut "九宫格" -n &lt;ID&gt;</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe model search image</div>
+      <div class="code-block" style="margin:0 0 6px">libtv.exe model search video</div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── 主題資料（完整版）──
+const THEMES = {
+  drink:{
+    icon:'🥤', label:'飲料/食品廣告', sub:'運動飲料FLOW・5鏡頭・約20秒',
+    imgModel:'Seedream 5.0', vidModel:'Seedance 2.0', musicStyle:'電子/活力 130BPM', cost:'~350積分',
+    shots:[
+      {n:'鏡頭1',tag:'廣角・4秒',desc:'城市清晨，女主角在空曠街道奔跑，汗水飛濺，逆光剪影'},
+      {n:'鏡頭2',tag:'特寫・3秒',desc:'氣喘吁吁停下，汗珠從臉頰滑落，手伸向地上的FLOW飲料'},
+      {n:'鏡頭3',tag:'慢動作・4秒',desc:'開瓶，冰涼飲料慢動作倒出，水滴與冰塊飛濺，清爽質感'},
+      {n:'鏡頭4',tag:'中景・5秒',desc:'喝完後精神煥發，展開雙臂，眼神充滿活力與鬥志'},
+      {n:'鏡頭5',tag:'品牌・4秒',desc:'FLOW飲料瓶置中，標語「突破極限，FLOW與你同行」淡出'}
+    ],
+    script:'這是一支運動飲料「FLOW」的廣告。主角是一位20歲左右的年輕女運動員。<br>廣告要表現：清晨城市跑步 → 運動後拿出FLOW飲料喝 → 展現活力與能量 → 結尾出現品牌標語「突破極限，FLOW與你同行」。<br>風格：現代、活力、電影感。時長：約20秒，5個鏡頭。',
+    music:'Upbeat electronic music, energetic and motivational, suitable for a sports drink advertisement. Tempo: 130 BPM, 20 seconds, strong beat drop at 10s.<br><br><span style="color:var(--muted)">（活力電子音樂，130 BPM，第10秒有高潮轉折）</span>',
+    voice:'每一次突破，都是新的起點。<br>FLOW 運動飲料，補充你的能量，超越你的極限。<br>突破極限，FLOW 與你同行。'
+  },
+  beauty:{
+    icon:'💄', label:'美妝廣告', sub:'唇釉品牌LUMÉ・5鏡頭・約18秒',
+    imgModel:'Seedream 4.6', vidModel:'可灵 3.0', musicStyle:'輕柔流行 90BPM', cost:'~300積分',
+    shots:[
+      {n:'鏡頭1',tag:'特寫・3秒',desc:'清晨梳妝台前，女主角拿起LUMÉ唇釉，光線柔和夢幻'},
+      {n:'鏡頭2',tag:'超特寫・4秒',desc:'嘴唇塗上唇釉特寫，色彩飽滿鮮豔，質地細膩光澤感'},
+      {n:'鏡頭3',tag:'全身・4秒',desc:'穿著精緻服裝走出公寓，城市街頭自信步伐，陽光灑落'},
+      {n:'鏡頭4',tag:'側臉・4秒',desc:'咖啡廳窗邊，優雅側臉，輕輕回眸，嘴角淡笑'},
+      {n:'鏡頭5',tag:'品牌・3秒',desc:'粉色背景，品牌標語「你的色彩，你做主」柔光出現'}
+    ],
+    script:'這是一支美妝品牌「LUMÉ」的唇釉廣告。主角是一位25歲都市女性。<br>廣告要表現：早晨梳妝台前 → 塗上LUMÉ唇釉特寫 → 出門自信行走城市 → 回眸微笑 → 結尾品牌標語「你的色彩，你做主」。<br>風格：優雅、高端、粉調柔光。時長：約18秒，5個鏡頭。',
+    music:'Elegant ambient pop music, soft and luxurious, suitable for a cosmetics advertisement. Tempo: 90 BPM, 18 seconds, soft piano with gentle strings.<br><br><span style="color:var(--muted)">（優雅流行樂，鋼琴+弦樂，90 BPM）</span>',
+    voice:'妝點你的每一天，從一支唇釉開始。<br>LUMÉ，讓你的色彩說話。<br>你的色彩，你做主。'
+  },
+  drama:{
+    icon:'🎭', label:'都市短劇', sub:'愛情短劇「隔壁的他」片頭・6鏡頭・約30秒',
+    imgModel:'Seedream 5.0', vidModel:'HappyHorse 1.0', musicStyle:'浪漫民謠吉他 80BPM', cost:'~400積分',
+    shots:[
+      {n:'鏡頭1',tag:'廣角・4秒',desc:'女主角提著行李箱走進現代公寓大廳，環顧四周，期待又緊張'},
+      {n:'鏡頭2',tag:'中景・3秒',desc:'打開新家大門進入，看到空蕩蕩的房間，四處張望'},
+      {n:'鏡頭3',tag:'特寫・3秒',desc:'聽到隔壁傳來聲音，好奇靠近牆邊，側耳傾聽，眼神疑惑'},
+      {n:'鏡頭4',tag:'雙人・5秒',desc:'開門出去倒垃圾，正面撞見剛好開門的帥氣男鄰居，四目相對'},
+      {n:'鏡頭5',tag:'反打・3秒',desc:'尷尬沉默，兩人輪流互看，都不知道該說什麼'},
+      {n:'鏡頭6',tag:'片名・4秒',desc:'深色背景，片名「隔壁的他」優雅出現，配角色名字字幕'}
+    ],
+    script:'這是都市愛情短劇「隔壁的他」第一集片頭。主角是一對互不相識的鄰居。<br>劇情：女主角搬入新公寓 → 發現隔壁有神秘男生 → 走廊第一次相遇 → 尷尬互望 → 片名出現。<br>風格：現代都市、溫馨浪漫、輕喜劇。時長：約30秒，6個鏡頭。',
+    music:'Warm romantic acoustic music, light and playful, suitable for urban romance drama. Tempo: 80 BPM, 30 seconds, acoustic guitar with soft percussion.<br><br><span style="color:var(--muted)">（溫馨浪漫民謠吉他，80 BPM，30秒）</span>',
+    voice:'搬進新家的第一天，<br>她沒想到，命運住在她隔壁。<br>【隔壁的他】，即將開播。'
+  },
+  fashion:{
+    icon:'👗', label:'時尚廣告', sub:'秋冬系列NOIR・5鏡頭・約20秒',
+    imgModel:'Seedream 5.0', vidModel:'Seedance 2.0', musicStyle:'極簡電影感 70BPM', cost:'~320積分',
+    shots:[
+      {n:'鏡頭1',tag:'跟拍・4秒',desc:'米蘭石板街頭，模特兒穿著NOIR大衣背對鏡頭走去，跟拍鏡頭'},
+      {n:'鏡頭2',tag:'慢動作・4秒',desc:'轉身瞬間，秋風吹起大衣衣角，頭髮飄動，慢動作拍攝'},
+      {n:'鏡頭3',tag:'超特寫・3秒',desc:'服裝細節特寫：紐扣、縫線、面料質感，冷光打亮'},
+      {n:'鏡頭4',tag:'側臉・4秒',desc:'咖啡廳落地窗前，模特兒側坐，手托下巴望向窗外'},
+      {n:'鏡頭5',tag:'品牌・5秒',desc:'黑色背景，NOIR品牌標誌，標語「穿上NOIR，定義你的秋天」'}
+    ],
+    script:'這是時尚品牌「NOIR」秋冬系列廣告。主角是一位高挑的模特兒。<br>廣告要表現：米蘭街頭走路 → 風吹大衣慢動作 → 服裝細節特寫 → 咖啡廳優雅側臉 → 品牌標語結尾。<br>風格：高端時尚、電影感、黑白金色調。時長：約20秒，5個鏡頭。',
+    music:'Sophisticated cinematic music, dark and elegant, suitable for luxury fashion advertisement. Tempo: 70 BPM, 20 seconds, minimal electronic with deep bass.<br><br><span style="color:var(--muted)">（高端電影感，低沉電子Bass，70 BPM）</span>',
+    voice:'當秋風吹起，風格即是態度。<br>NOIR 2025 秋冬系列。<br>穿上NOIR，定義你的秋天。'
+  },
+  mv:{
+    icon:'🎵', label:'音樂MV', sub:'R&B歌手李曉晨「迷途」・6鏡頭・約40秒',
+    imgModel:'Seedream 5.0', vidModel:'可灵 3.0', musicStyle:'情緒R&B 75BPM', cost:'~450積分',
+    shots:[
+      {n:'鏡頭1',tag:'廣角・5秒',desc:'雨夜城市街頭，女孩撐傘獨自行走，路燈倒映在積水上，冷藍色調'},
+      {n:'鏡頭2',tag:'回憶・4秒',desc:'閃回：陽光下兩人牽手並肩走路，暖橙色調，幸福笑容'},
+      {n:'鏡頭3',tag:'中景・5秒',desc:'橋上獨立，女孩望向遠方城市燈火，背影孤獨，風吹頭髮'},
+      {n:'鏡頭4',tag:'特寫・4秒',desc:'淚水在眼眶打轉，側臉特寫，睫毛上掛著水珠，情緒飽滿'},
+      {n:'鏡頭5',tag:'轉場・4秒',desc:'雨停了，陽光突破雲層，光線灑落在女孩臉上，表情轉為釋懷'},
+      {n:'鏡頭6',tag:'演唱・6秒',desc:'歌手面對鏡頭演唱，背景是城市夜景，情緒澎湃，釋懷微笑'}
+    ],
+    script:'這是歌手「李曉晨」新歌「迷途」的MV。歌曲是充滿情緒的R&B慢歌。<br>MV劇情：城市雨中獨自行走 → 溫暖回憶閃回 → 橋上望遠 → 淚目特寫 → 雨停釋懷 → 歌手演唱結尾。<br>風格：電影感、情緒化、冷藍暖橙對比色調。時長：約40秒，6個鏡頭。',
+    music:'Emotional R&B background score, melancholic and cinematic. Tempo: 75 BPM, 40 seconds, soft piano with rain ambience and subtle strings.<br><br><span style="color:var(--muted)">（情緒R&B，鋼琴+雨聲+弦樂，75 BPM）</span>',
+    voice:'每一段迷途，<br>都是找到自己的旅程。<br>李曉晨《迷途》，現在聆聽。'
+  }
+};
+
+function renderPreview(key){
+  const t = THEMES[key];
+  document.getElementById('prev-icon').textContent = t.icon;
+  document.getElementById('prev-title').textContent = t.label;
+  document.getElementById('prev-sub').textContent = t.sub;
+  document.getElementById('prev-img').textContent = t.imgModel;
+  document.getElementById('prev-vid').textContent = t.vidModel;
+  document.getElementById('prev-music').textContent = t.musicStyle;
+  document.getElementById('prev-cost').textContent = t.cost;
+  const grid = document.getElementById('prev-shots');
+  grid.innerHTML = t.shots.map(s=>`
+    <div class="shot-card">
+      <div class="shot-num">${s.n}<span class="shot-tag">${s.tag}</span></div>
+      <div class="shot-desc">${s.desc}</div>
+    </div>`).join('');
+}
+
+function setTheme(key){
+  const t = THEMES[key];
+  if(!t) return;
+  renderPreview(key);
+  // 更新卡片內的範例文字
+  const s = document.getElementById('ex-script-text');
+  if(s) s.innerHTML = t.script;
+  const m = document.getElementById('ex-music-text');
+  if(m) m.innerHTML = t.music;
+  const v = document.getElementById('ex-voice-text');
+  if(v) v.innerHTML = t.voice;
+  // 更新按鈕高亮
+  document.querySelectorAll('.theme-btn').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('onclick').includes("'"+key+"'"));
+  });
+  // 淡入
+  document.querySelectorAll('.theme-example,.theme-preview').forEach(e=>{
+    e.style.opacity='0.3';
+    setTimeout(()=>e.style.opacity='1',120);
+  });
+}
+
+const TOTAL = 12;
+let state = JSON.parse(localStorage.getItem('ad_tut_state') || '{}');
+
+function toggleCard(id){
+  const c = document.getElementById(id);
+  c.classList.toggle('open');
+}
+
+function copyCode(btn){
+  const code = btn.parentElement.innerText.replace('複製','').trim();
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='已複製!';
+    setTimeout(()=>btn.textContent='複製',2000);
+  });
+}
+
+function updateCheck(cardId, cb){
+  if(!state[cardId]) state[cardId]={checks:0,done:false};
+  const container = cb.closest('.checklist');
+  const all = container.querySelectorAll('input[type=checkbox]');
+  cb.closest('.check-item').classList.toggle('checked', cb.checked);
+  const checked = [...all].filter(x=>x.checked).length;
+  state[cardId].checks = checked;
+  save();
+}
+
+function markDone(cardId, idx){
+  if(!state[cardId]) state[cardId]={checks:0,done:false};
+  state[cardId].done = true;
+  const btn = document.getElementById('btn-'+cardId);
+  btn.textContent = '✅ 完成！';
+  btn.classList.add('completed');
+  updateProgress();
+  updateFlowBar(idx);
+  updateNavDot(idx, cardId);
+  save();
+}
+
+function save(){
+  localStorage.setItem('ad_tut_state', JSON.stringify(state));
+  updateProgress();
+}
+
+function updateProgress(){
+  const done = Object.values(state).filter(v=>v.done).length;
+  const pct = Math.round(done/TOTAL*100);
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progLabel').textContent = done+' / '+TOTAL+' 完成';
+}
+
+function updateFlowBar(idx){
+  document.querySelectorAll('.flow-node').forEach((n,i)=>{
+    if(i<=idx) n.classList.add('done');
+  });
+}
+
+function updateNavDot(idx, cardId){
+  const navItems = document.querySelectorAll('.nav-item');
+  if(navItems[idx]) navItems[idx].classList.add('done');
+}
+
+function restoreState(){
+  Object.entries(state).forEach(([cardId, s])=>{
+    if(s.done){
+      const btn = document.getElementById('btn-'+cardId);
+      if(btn){ btn.textContent='✅ 完成！'; btn.classList.add('completed'); }
+      const idx = parseInt(cardId.replace('c',''));
+      updateFlowBar(idx);
+      if(document.querySelectorAll('.nav-item')[idx])
+        document.querySelectorAll('.nav-item')[idx].classList.add('done');
+    }
+  });
+  updateProgress();
+}
+
+function scrollTo(id){
+  const el = document.getElementById(id);
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); if(!el.classList.contains('open')) el.classList.add('open'); }
+  return false;
+}
+
+// 預設第一張卡開著
+window.addEventListener('load',()=>{
+  restoreState();
+  renderPreview('drink');
+  document.getElementById('c0').classList.add('open');
+});
+</script>
+</body>
+</html>
